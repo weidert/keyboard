@@ -142,7 +142,7 @@ public class KeyPanel extends JPanel {
       buttonMap.put(code, button);
     }
 
-    setLayout(KeyLayout.getDefault());
+    refresh();
     
     setupGUI();
   }
@@ -168,11 +168,13 @@ public class KeyPanel extends JPanel {
     }
   }
   
-  public void setLayout(KeyLayout layout) {
+  public void refresh() {
+    KeyLayout layout = Session.getTheSession().getKeyLayout();
     for (int i = 0; i < KEYBOARD_LAYOUT.length; i++) {
       for (int j = 0; j < KEYBOARD_LAYOUT[i].length; j++) {
         int keyCode = KEYBOARD_LAYOUT[i][j]; 
-        Note note = layout.getNote(keyCode);
+        int offset = layout.getNoteOffset(keyCode);
+        Note note = Session.getTheSession().getNote(offset);
         buttonMap.get(keyCode).setNote(note);
       }
     }

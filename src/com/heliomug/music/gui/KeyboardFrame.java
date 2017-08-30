@@ -1,6 +1,9 @@
 package com.heliomug.music.gui;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -30,6 +33,9 @@ public class KeyboardFrame extends JFrame {
     
     addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_D && e.isControlDown()) {
+          System.exit(0);
+        }
         int mods = e.getModifiers();
         if (mods == 0 || mods == 1) {
           Session.getTheSession().handleKeyDown(e);
@@ -43,6 +49,14 @@ public class KeyboardFrame extends JFrame {
     
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+    Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+    int x = (int) rect.getMaxX() - getWidth();
+    int y = (int) rect.getMaxY() - getHeight();
+    setLocation(x, y);
+    
+    setResizable(false);
     
     setJMenuBar(KeyboardMenuBar.getTheBar());
     

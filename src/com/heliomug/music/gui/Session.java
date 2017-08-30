@@ -11,6 +11,7 @@ import com.heliomug.music.StandardInstrument;
 public class Session {
   private static final StandardInstrument DEFAULT_INSTRUMENT = StandardInstrument.PIANO_GRAND;
   private static final int DEFAULT_VOLUME = 80;
+  private static final Note DEFAULT_ROOT_NOTE = new Note(48);
 
   private static Session theSession;
   
@@ -25,36 +26,52 @@ public class Session {
   private StandardInstrument instrument;
   private int volume;
   private KeyLayout keyLayout;
+  private Note rootNote;
   private Map<Integer, Boolean> keysDown;
   
   private Session() {
     instrument = DEFAULT_INSTRUMENT;
     volume = DEFAULT_VOLUME;
+    rootNote = DEFAULT_ROOT_NOTE;
     MidiPlayer.setInstrument(instrument);
     keyLayout = KeyLayout.getDefault();
     keysDown = new HashMap<>();
   }
+
   
   public String getStatusLine() {
     return String.format("Instrument: %s, Volume: %d, Layout: %s", instrument.getName(), volume, keyLayout.getName());
-  }
-  
-  public void setInstrument(StandardInstrument instrument) {
-    MidiPlayer.setInstrument(instrument);
-  }
-  
-  public void setNoteMap(KeyLayout noteMap) {
-    this.keyLayout = noteMap;
   }
   
   public StandardInstrument getActiveInstrument() {
     return instrument;
   }
   
+  public KeyLayout getKeyLayout() {
+    return keyLayout;
+  }
+  
+  public Note getNote(int noteOffset) {
+    return noteOffset >= 0 ? this.rootNote.getHigher(noteOffset) : null;
+  }
+
+  
+  public void setInstrument(StandardInstrument instrument) {
+    MidiPlayer.setInstrument(instrument);
+  }
+  
+  public void setLayout(KeyLayout keyLayout) {
+    this.keyLayout = keyLayout;
+  }
+  
   public void setVolume(int volume) {
     this.volume = volume;
   }
   
+  public void setRootNote(Note rootNote) {
+    this.rootNote = rootNote;
+  }
+
   public void noteOn(Note note) {
     MidiPlayer.noteOn(note, volume);
   }
@@ -71,7 +88,8 @@ public class Session {
     if (!keysDown.containsKey(keyCode) || !keysDown.get(keyCode) && e.getModifiers() == 0) {
       KeyPanel.getThePanel().whiteKey(keyCode);
       keysDown.put(keyCode, true);
-      Note note = keyLayout.getNote(keyCode);
+      int offset = keyLayout.getNoteOffset(keyCode);
+      Note note = getNote(offset);
       if (note != null && note.getValue() > 0) {
         noteOn(note);
       }
@@ -79,11 +97,12 @@ public class Session {
   }
   
   public void handleKeyUp(KeyEvent e) {
-    int code = e.getKeyCode();
-    KeyPanel.getThePanel().recolorKey(code);
-    if (keysDown.containsKey(code) && keysDown.get(code)) {
-      keysDown.put(code, false);
-      Note note = keyLayout.getNote(code);
+    int keyCode = e.getKeyCode();
+    KeyPanel.getThePanel().recolorKey(keyCode);
+    if (keysDown.containsKey(keyCode) && keysDown.get(keyCode)) {
+      keysDown.put(keyCode, false);
+      int offset = keyLayout.getNoteOffset(keyCode);
+      Note note = getNote(offset);
       if (note != null && note.getValue() > 0) {
         noteOff(note);
       }

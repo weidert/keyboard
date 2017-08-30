@@ -13,9 +13,9 @@ import com.heliomug.music.Note;
 public class KeyButton extends JButton {
   private static final long serialVersionUID = -1417804610200497298L;
   
-  private static final Font STANDARD_FONT = new Font("Sans Serif", Font.PLAIN, 16);
-  private static final int HEIGHT = 48;
-  private static final int WIDTH = 48;
+  private static final Font STANDARD_FONT = new Font("Sans Serif", Font.PLAIN, 10);
+  private static final int HEIGHT = 24;
+  private static final int WIDTH = 24;
   
   private String letter;
   private Note note;
@@ -52,6 +52,10 @@ public class KeyButton extends JButton {
     });
   }
   
+  public String getLetter() {
+    return letter;
+  }
+  
   public void whiteKey() {
     setBackground(Color.WHITE);
     setForeground(Color.BLACK);
@@ -70,9 +74,9 @@ public class KeyButton extends JButton {
     this.note = note;
     resetColor();
     if (note == null || !note.isMajor()) {
-      setText(String.format("<html><font size='1'>%s</font></html>", letter));
+      setText("");
     } else {
-      setText(String.format("<html><b><font size='4'>%s</font></b><br><font size='1'>%s</font></html>", note.getNoteName(), letter));
+      setText(String.format("<html>%s</html>", note.getNoteName()));
     }
   }
 }
