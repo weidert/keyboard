@@ -196,6 +196,12 @@ public class KeyPanel extends JPanel {
     }
   }
   
+  public void recolorAll() {
+    for (KeyButton button : buttonMap.values()) {
+      button.resetColor();
+    }
+  }
+  
   private static String translateToCharacter(int code) {
     if (STANDARD_CHARS.containsKey(code)) {
       return STANDARD_CHARS.get(code);

@@ -18,18 +18,21 @@ public class Session {
     return theSession;
   }
   
-  public static void resetToDefaults() {
-    theSession = new Session(); 
-  }
-  
   private Settings settings;
-  private transient Map<Integer, Boolean> keysDown;
-  private transient Recorder recorder;
+  private Map<Integer, Boolean> keysDown;
+  private boolean isRecording;
+  private Recorder recorder;
   
   private Session() {
     settings = Settings.loadSettings();
     keysDown = new HashMap<>();
+    isRecording = false;
     recorder = new Recorder();
+    MidiPlayer.setInstrument(settings.getActiveInstrument());
+  }
+  
+  public void resetSettings() {
+    settings = Settings.getFreshSettings();
     MidiPlayer.setInstrument(settings.getActiveInstrument());
   }
   
@@ -62,40 +65,7 @@ public class Session {
   public void setRootNote(Note rootNote) {
     settings.setRootNote(rootNote);
   }
-  
-  public void pressNote(Note note) {
-    recorder.recordNoteOn(note);
-    MidiPlayer.noteOn(note, settings.getVolume());
-  }
-  
-  public void releaseNote(Note note) {
-    recorder.recordNoteOff(note);
-    MidiPlayer.noteOff(note);
-  }
 
-  public void robotOn(Note note) {
-    MidiPlayer.noteOn(note, settings.getVolume());
-  }
-  
-  public void robotOff(Note note) {
-    MidiPlayer.noteOff(note);
-  }
-  
-  public void robotAllOff() {
-    MidiPlayer.allNotesOff();
-  }
-  
-  public void recorderReset() {
-    this.recorder = new Recorder();
-  }
-  
-  public void recorderPlay() {
-    this.recorder.play();
-  }
-  
-  public void recorderStop() {
-    this.recorder.stop();
-  }
   
   public void handleKeyDown(KeyEvent e) {
     int keyCode = e.getKeyCode();
@@ -125,6 +95,58 @@ public class Session {
       }
     }
   }
+  
+  public void pressNote(Note note) {
+    if (isRecording) recorder.recordNoteOn(note);
+    MidiPlayer.noteOn(note, settings.getVolume());
+  }
+  
+  public void releaseNote(Note note) {
+    if (isRecording) recorder.recordNoteOff(note);
+    MidiPlayer.noteOff(note);
+  }
+
+
+  public void robotOn(Note note) {
+    MidiPlayer.noteOn(note, settings.getVolume());
+    int offset = getOffset(note);
+    int keyCode = settings.getKeyLayout().getKeyCode(offset);
+    if (keyCode >= 0) {
+      KeyPanel.getThePanel().whiteKey(keyCode);
+    }
+  }
+  
+  public void robotOff(Note note) {
+    MidiPlayer.noteOff(note);
+    int offset = getOffset(note);
+    int keyCode = settings.getKeyLayout().getKeyCode(offset);
+    if (keyCode >= 0) {
+      KeyPanel.getThePanel().recolorKey(keyCode);
+    }
+  }
+  
+  public void robotAllOff() {
+    MidiPlayer.allNotesOff();
+    KeyPanel.getThePanel().recolorAll();
+  }
+  
+  public void recorderStartRecording() {
+    this.recorder = new Recorder();
+    this.isRecording = true;
+  }
+  
+  public void recorderStopRecording() {
+    this.isRecording = false;
+  }
+  
+  public void recorderStartPlayback() {
+    this.recorder.startPlayback();
+  }
+  
+  public void recorderStopPlayback() {
+    this.recorder.stopPlayback();
+  }
+
   
   public void saveDefault() {
     settings.saveDefault();

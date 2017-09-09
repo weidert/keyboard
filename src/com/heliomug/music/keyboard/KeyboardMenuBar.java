@@ -55,12 +55,6 @@ public class KeyboardMenuBar extends JMenuBar {
     
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
-    item = new JMenuItem("Reset to Defaults", KeyEvent.VK_R);
-    item.addActionListener((ActionEvent e) -> {
-      Session.resetToDefaults();
-      KeyPanel.getThePanel().refresh();
-    });
-    menu.add(item);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
     item.addActionListener((ActionEvent e) -> KeyboardFrame.getTheFrame().quit());
     menu.add(item);
@@ -74,19 +68,25 @@ public class KeyboardMenuBar extends JMenuBar {
     
     menu = new JMenu("Recorder");
     menu.setMnemonic(KeyEvent.VK_R);
-    item = new JMenuItem("Record", KeyEvent.VK_R);
+    item = new JMenuItem("Start Recording", KeyEvent.VK_R);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderReset();
+      Session.getTheSession().recorderStartRecording();
     });
     menu.add(item);
-    item = new JMenuItem("Stop", KeyEvent.VK_S);
+    item = new JMenuItem("Stop Recording", KeyEvent.VK_S);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderStop();
+      Session.getTheSession().recorderStartRecording();
     });
     menu.add(item);
-    item = new JMenuItem("Play", KeyEvent.VK_P);
+    menu.addSeparator();
+    item = new JMenuItem("Start Playback", KeyEvent.VK_P);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderPlay();
+      Session.getTheSession().recorderStartPlayback();
+    });
+    menu.add(item);
+    item = new JMenuItem("Stop Playback", KeyEvent.VK_B);
+    item.addActionListener((ActionEvent e) -> {
+      Session.getTheSession().recorderStopPlayback();
     });
     menu.add(item);
     
@@ -166,6 +166,13 @@ public class KeyboardMenuBar extends JMenuBar {
     );
     rootSelector.setMnemonic(KeyEvent.VK_R);
     menu.add(rootSelector);
+    menu.addSeparator();
+    JMenuItem item = new JMenuItem("Reset to Defaults", KeyEvent.VK_D);
+    item.addActionListener((ActionEvent e) -> {
+      Session.getTheSession().resetSettings();
+      KeyPanel.getThePanel().refresh();
+    });
+    menu.add(item);
     
     return menu;
   }

@@ -29,7 +29,7 @@ public class Recorder {
     noteEvents.add(new NoteEvent(note, false));
   }
   
-  public void play() {
+  public void startPlayback() {
     Runnable r = () -> {
       for (int i = 0; i < noteEvents.size() ; i++) {
         NoteEvent current = noteEvents.get(i);
@@ -56,8 +56,8 @@ public class Recorder {
     playbackThread.start();
   }
   
-  public void stop() {
-    playbackThread.interrupt();
+  public void stopPlayback() {
+    if (playbackThread != null && playbackThread.isAlive()) playbackThread.interrupt();
   }
   
   private class NoteEvent {

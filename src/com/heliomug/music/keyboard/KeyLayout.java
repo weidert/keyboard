@@ -83,17 +83,20 @@ public enum KeyLayout {
   
   private String name;
   private Map<Integer, Integer> noteMap;
+  private Map<Integer, Integer> offsetMap;
   private int mnemonic;
   
   private KeyLayout(int[][] codes, String name, int mnemonic) {
     this.name = name;
     this.mnemonic = mnemonic;
     noteMap = new HashMap<>();
+    offsetMap = new HashMap<>();
     for (int i = 0; i < codes.length; i++) {
       for (int j = 0; j < codes[i].length; j++) {
         int keyCode = KeyPanel.KEYBOARD_LAYOUT[i][j];
         int noteCode = codes[i][j];
         noteMap.put(keyCode, noteCode); 
+        offsetMap.put(noteCode, keyCode); 
       }
     }
   }
@@ -108,6 +111,10 @@ public enum KeyLayout {
   
   public int getNoteOffset(int keyCode) {
     return noteMap.containsKey(keyCode) ? noteMap.get(keyCode) : -1;
+  }
+  
+  public int getKeyCode(int offset) {
+    return offsetMap.containsKey(offset) ? offsetMap.get(offset) : -1;
   }
   
   @Override

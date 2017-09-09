@@ -28,6 +28,10 @@ public class Settings implements Serializable {
     }
   }
   
+  public static Settings getFreshSettings() {
+    return new Settings();
+  }
+  
   private StandardInstrument instrument;
   private int volume;
   private KeyLayout keyLayout;
