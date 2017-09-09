@@ -47,6 +47,12 @@ public class KeyboardMenuBar extends JMenuBar {
     
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
+    item = new JMenuItem("Reset to Defaults", KeyEvent.VK_R);
+    item.addActionListener((ActionEvent e) -> {
+      Session.resetToDefaults();
+      KeyPanel.getThePanel().refresh();
+    });
+    menu.add(item);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
     item.addActionListener((ActionEvent e) -> KeyboardFrame.getTheFrame().quit());
     menu.add(item);

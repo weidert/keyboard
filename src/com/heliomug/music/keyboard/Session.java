@@ -42,6 +42,10 @@ public class Session implements Serializable {
     }
   }
   
+  public static void resetToDefaults() {
+    theSession = new Session(); 
+  }
+  
   
   private StandardInstrument instrument;
   private int volume;
