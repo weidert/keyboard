@@ -141,7 +141,7 @@ public class Session implements Serializable {
     try {
       FileUtils.saveObjectToHeliomugDirectory(this, SAVE_NAME);
     } catch (IOException e) {
-      // guess we're not saving then
+      e.printStackTrace();
     }
   }
 }

@@ -19,7 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FileUtils {
-  public static final String HELIOMUG_DIRECTORY = ".heliomug";
+  public static final String HELIOMUG_DIRECTORY = "heliomug";
+  public static final String CONFIG_DIRECTORY = ".config";
 
   public static File selectDirectory() {
     return selectDirectory("Select Directory");
@@ -122,7 +123,7 @@ public class FileUtils {
   }
   
   public static String getHeliomugDirectory() {
-    return getHomePath() + File.separator + HELIOMUG_DIRECTORY;
+    return getHomePath() + File.separator + CONFIG_DIRECTORY + File.separator + HELIOMUG_DIRECTORY;
   }
   
   public static String getHeliomugPath(String fileName) {
