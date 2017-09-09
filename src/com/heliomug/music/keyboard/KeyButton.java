@@ -13,9 +13,9 @@ import com.heliomug.music.Note;
 public class KeyButton extends JButton {
   private static final long serialVersionUID = -1417804610200497298L;
   
-  private static final Font STANDARD_FONT = new Font("Sans Serif", Font.PLAIN, 10);
-  private static final int HEIGHT = 24;
-  private static final int WIDTH = 24;
+  private static final Font STANDARD_FONT = new Font("Sans Serif", Font.BOLD, 16);
+  private static final int HEIGHT = 36;
+  private static final int WIDTH = 36;
   
   private String letter;
   private Note note;

@@ -5,6 +5,7 @@ import static java.awt.event.KeyEvent.VK_G;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_M;
 import static java.awt.event.KeyEvent.VK_P;
+import static java.awt.event.KeyEvent.VK_U;
 import static java.awt.event.KeyEvent.VK_W;
 
 import java.util.HashMap;
@@ -52,7 +53,14 @@ public enum KeyLayout {
       {-1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, 
       {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
       "Guitar",
-      VK_G);
+      VK_G),
+  UKELELE(new int[][] {
+      {-1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26},
+      {-1, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22},
+      {-1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, 
+      {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
+      "Ukelele",
+      VK_U);
 
   private static Map<String, KeyLayout> nameMap;
   
