@@ -42,9 +42,9 @@ public class KeyButton extends JButton {
           if (button.getModel().isPressed() != pressed) {
             pressed = button.getModel().isPressed();
             if (pressed) {
-              Session.getTheSession().noteOn(note);
+              Session.getTheSession().pressNote(note);
             } else {
-              Session.getTheSession().noteOff(note);
+              Session.getTheSession().releaseNote(note);
             }
           }
         }

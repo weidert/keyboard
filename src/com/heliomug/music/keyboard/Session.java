@@ -1,111 +1,100 @@
 package com.heliomug.music.keyboard;
 
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.heliomug.music.MidiPlayer;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
-import com.heliomug.utils.FileUtils;
 
-public class Session implements Serializable {
-  private static final long serialVersionUID = 1632505793730304688L;
-
-  private static final StandardInstrument DEFAULT_INSTRUMENT = StandardInstrument.ORGAN_CHURCH;
-  private static final int DEFAULT_VOLUME = 80;
-  private static final Note DEFAULT_ROOT_NOTE = new Note(48);
-  private static final KeyLayout DEFAULT_KEY_LAYOUT = KeyLayout.PIANO_HOMEROW_MIDDLE;
-  private static final String SAVE_NAME = "keyboard.state";
-
+public class Session {
   private static Session theSession;
   
   public static Session getTheSession() {
     if (theSession == null) { 
-      theSession = loadDefault();
+      theSession = new Session();
     }
     return theSession;
-  }
-  
-  public static Session loadDefault() { 
-    Session session;
-    try {
-      session = (Session) FileUtils.loadObjectFromHeliomugDirectory(SAVE_NAME);
-      session.keysDown = new HashMap<>();
-      session.finishSetup();
-      return session;
-    } catch (ClassNotFoundException | IOException e) {
-      e.printStackTrace();
-      return new Session();
-    }
   }
   
   public static void resetToDefaults() {
     theSession = new Session(); 
   }
   
-  
-  private StandardInstrument instrument;
-  private int volume;
-  private KeyLayout keyLayout;
-  private Note rootNote;
+  private Settings settings;
   private transient Map<Integer, Boolean> keysDown;
+  private transient Recorder recorder;
   
   private Session() {
-    instrument = DEFAULT_INSTRUMENT;
-    volume = DEFAULT_VOLUME;
-    rootNote = DEFAULT_ROOT_NOTE;
-    keyLayout = DEFAULT_KEY_LAYOUT;
+    settings = Settings.loadSettings();
     keysDown = new HashMap<>();
-    finishSetup();
-  }
-  
-  private void finishSetup() {
-    MidiPlayer.setInstrument(instrument);
-  }
-  
-  public String getStatusLine() {
-    return String.format("Instrument: %s, Volume: %d, Layout: %s", instrument.getName(), volume, keyLayout.getName());
-  }
-  
-  public StandardInstrument getActiveInstrument() {
-    return instrument;
+    recorder = new Recorder();
+    MidiPlayer.setInstrument(settings.getActiveInstrument());
   }
   
   public KeyLayout getKeyLayout() {
-    return keyLayout;
+    return settings.getKeyLayout();
+  }
+  
+  public int getOffset(Note note) {
+    return settings.getRootNote().distanceTo(note);
   }
   
   public Note getNote(int noteOffset) {
-    return noteOffset >= 0 ? this.rootNote.getHigher(noteOffset) : null;
+    return noteOffset >= 0 ? settings.getRootNote().getHigher(noteOffset) : null;
   }
 
   
   public void setInstrument(StandardInstrument instrument) {
-    this.instrument = instrument;
+    settings.setInstrument(instrument);
     MidiPlayer.setInstrument(instrument);
   }
   
   public void setLayout(KeyLayout keyLayout) {
-    this.keyLayout = keyLayout;
+    settings.setLayout(keyLayout);
   }
   
   public void setVolume(int volume) {
-    this.volume = volume;
+    settings.setVolume(volume);
   }
   
   public void setRootNote(Note rootNote) {
-    this.rootNote = rootNote;
-  }
-
-  public void noteOn(Note note) {
-    MidiPlayer.noteOn(note, volume);
+    settings.setRootNote(rootNote);
   }
   
-  public void noteOff(Note note) {
+  public void pressNote(Note note) {
+    recorder.recordNoteOn(note);
+    MidiPlayer.noteOn(note, settings.getVolume());
+  }
+  
+  public void releaseNote(Note note) {
+    recorder.recordNoteOff(note);
     MidiPlayer.noteOff(note);
+  }
+
+  public void robotOn(Note note) {
+    MidiPlayer.noteOn(note, settings.getVolume());
+  }
+  
+  public void robotOff(Note note) {
+    MidiPlayer.noteOff(note);
+  }
+  
+  public void robotAllOff() {
+    MidiPlayer.allNotesOff();
+  }
+  
+  public void recorderReset() {
+    this.recorder = new Recorder();
+  }
+  
+  public void recorderPlay() {
+    this.recorder.play();
+  }
+  
+  public void recorderStop() {
+    this.recorder.stop();
   }
   
   public void handleKeyDown(KeyEvent e) {
@@ -116,10 +105,10 @@ public class Session implements Serializable {
     if (!keysDown.containsKey(keyCode) || !keysDown.get(keyCode) && e.getModifiers() == 0) {
       KeyPanel.getThePanel().whiteKey(keyCode);
       keysDown.put(keyCode, true);
-      int offset = keyLayout.getNoteOffset(keyCode);
+      int offset = settings.getKeyLayout().getNoteOffset(keyCode);
       Note note = getNote(offset);
       if (note != null && note.getValue() > 0) {
-        noteOn(note);
+        pressNote(note);
       }
     }
   }
@@ -129,19 +118,15 @@ public class Session implements Serializable {
     KeyPanel.getThePanel().recolorKey(keyCode);
     if (keysDown.containsKey(keyCode) && keysDown.get(keyCode)) {
       keysDown.put(keyCode, false);
-      int offset = keyLayout.getNoteOffset(keyCode);
+      int offset = settings.getKeyLayout().getNoteOffset(keyCode);
       Note note = getNote(offset);
       if (note != null && note.getValue() > 0) {
-        noteOff(note);
+        releaseNote(note);
       }
     }
   }
   
   public void saveDefault() {
-    try {
-      FileUtils.saveObjectToHeliomugDirectory(this, SAVE_NAME);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    settings.saveDefault();
   }
 }

@@ -7,6 +7,7 @@ import javax.sound.midi.Synthesizer;
 
 public class MidiPlayer {
   private static final int DRUM_CHANNEL = 9;
+  private static final int DEFAULT_VOLUME = 100;
   
 	private static Synthesizer synth;
 	private static MidiChannel[] channels;
@@ -64,6 +65,10 @@ public class MidiPlayer {
 	
 	public static void noteOn(Note note, int volume) {
 		noteOn(getOnChannel(note), note.getValue(), volume);
+	}
+    
+	public static void noteOn(Note note) {
+	  noteOn(note, DEFAULT_VOLUME);
 	}
 	
 	public static void noteOff(Note note) {

@@ -179,6 +179,10 @@ public class KeyPanel extends JPanel {
       }
     }
   }
+  
+  public void whiteKey(Note note) {
+    
+  }
 
   public void whiteKey(int code) {
     if (buttonMap.containsKey(code)) {

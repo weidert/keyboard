@@ -42,6 +42,14 @@ public class KeyboardMenuBar extends JMenuBar {
   private KeyboardMenuBar() {
     super();
 
+    
+    add(getFileMenu());
+    add(getRecorderMenu());
+    add(getSettingsMenu());
+    add(getAboutMenu());
+  }
+  
+  public JMenu getFileMenu() {
     JMenu menu;
     JMenuItem item;
     
@@ -56,24 +64,37 @@ public class KeyboardMenuBar extends JMenuBar {
     item = new JMenuItem("Exit", KeyEvent.VK_X);
     item.addActionListener((ActionEvent e) -> KeyboardFrame.getTheFrame().quit());
     menu.add(item);
-    add(menu);
     
-    add(getOptionMenu());
-    
-    menu = new JMenu("About");
-    menu.setMnemonic(KeyEvent.VK_A);
-    item = new JMenuItem("About");
-    item.addActionListener((ActionEvent e) -> {
-      String message = "By Craig Weidert, 2017";
-      javax.swing.JOptionPane.showMessageDialog(KeyboardFrame.getTheFrame(), message);
-    });
-    menu.add(item);
-    add(menu);
+    return menu;
   }
   
-  public JMenu getOptionMenu() {
-    JMenu menu = new JMenu("Options");
-    menu.setMnemonic(KeyEvent.VK_O);
+  public JMenu getRecorderMenu() {
+    JMenu menu;
+    JMenuItem item;
+    
+    menu = new JMenu("Recorder");
+    menu.setMnemonic(KeyEvent.VK_R);
+    item = new JMenuItem("Record", KeyEvent.VK_R);
+    item.addActionListener((ActionEvent e) -> {
+      Session.getTheSession().recorderReset();
+    });
+    menu.add(item);
+    item = new JMenuItem("Stop", KeyEvent.VK_S);
+    item.addActionListener((ActionEvent e) -> {
+      Session.getTheSession().recorderStop();
+    });
+    menu.add(item);
+    item = new JMenuItem("Play", KeyEvent.VK_P);
+    item.addActionListener((ActionEvent e) -> {
+      Session.getTheSession().recorderPlay();
+    });
+    menu.add(item);
+    
+    return menu;
+  }
+  public JMenu getSettingsMenu() {
+    JMenu menu = new JMenu("Settings");
+    menu.setMnemonic(KeyEvent.VK_S);
     
     List<List<StandardInstrument>> extendedInstrumentList= new ArrayList<>();
     List<StandardInstrument> subList = new ArrayList<>();
@@ -145,6 +166,22 @@ public class KeyboardMenuBar extends JMenuBar {
     );
     rootSelector.setMnemonic(KeyEvent.VK_R);
     menu.add(rootSelector);
+    
+    return menu;
+  }
+  
+  public JMenu getAboutMenu() {
+    JMenu menu;
+    JMenuItem item;
+
+    menu = new JMenu("About");
+    menu.setMnemonic(KeyEvent.VK_A);
+    item = new JMenuItem("About");
+    item.addActionListener((ActionEvent e) -> {
+      String message = "By Craig Weidert, 2017";
+      javax.swing.JOptionPane.showMessageDialog(KeyboardFrame.getTheFrame(), message);
+    });
+    menu.add(item);
     
     return menu;
   }
