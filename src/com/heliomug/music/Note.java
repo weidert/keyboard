@@ -1,13 +1,16 @@
 package com.heliomug.music;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Note {
-	private static final int INTERVALS_IN_CHROMATIC = 12;
+public class Note implements Serializable {
+  private static final long serialVersionUID = 7263475941153866475L;
+
+  private static final int INTERVALS_IN_CHROMATIC = 12;
 	
 	private static final List<Integer> MAJOR_NOTES = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
 	private static final float[] COLORS = {

@@ -1,4 +1,4 @@
-package com.heliomug.music.gui;
+package com.heliomug.music.keyboard;
 
 import java.awt.Color;
 import java.awt.Dimension;

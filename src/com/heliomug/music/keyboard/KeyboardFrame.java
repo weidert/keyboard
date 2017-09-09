@@ -1,4 +1,4 @@
-package com.heliomug.music.gui;
+package com.heliomug.music.keyboard;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
@@ -6,7 +6,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -34,7 +36,7 @@ public class KeyboardFrame extends JFrame {
     addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_D && e.isControlDown()) {
-          System.exit(0);
+          quit();
         }
         int mods = e.getModifiers();
         if (mods == 0 || mods == 1) {
@@ -60,14 +62,21 @@ public class KeyboardFrame extends JFrame {
     
     setJMenuBar(KeyboardMenuBar.getTheBar());
     
+    addIcon();
+
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(KeyPanel.getThePanel(), BorderLayout.CENTER);
     add(panel);
-    pack();
-    
+    pack(); 
+  }
+
+  private void addIcon() {
+    URL url = getClass().getResource("/heliomug256.png");
+    setIconImage(new ImageIcon(url).getImage());    
   }
   
   public void quit() {
+    Session.getTheSession().saveDefault();
     System.exit(0);
   }
 }

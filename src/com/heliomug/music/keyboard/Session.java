@@ -1,25 +1,45 @@
-package com.heliomug.music.gui;
+package com.heliomug.music.keyboard;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.heliomug.music.MidiPlayer;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
+import com.heliomug.utils.FileUtils;
 
-public class Session {
-  private static final StandardInstrument DEFAULT_INSTRUMENT = StandardInstrument.PIANO_GRAND;
+public class Session implements Serializable {
+  private static final long serialVersionUID = 1632505793730304688L;
+
+  private static final StandardInstrument DEFAULT_INSTRUMENT = StandardInstrument.ORGAN_CHURCH;
   private static final int DEFAULT_VOLUME = 80;
   private static final Note DEFAULT_ROOT_NOTE = new Note(48);
+  private static final KeyLayout DEFAULT_KEY_LAYOUT = KeyLayout.PIANO_HOMEROW_MIDDLE;
+  private static final String SAVE_NAME = "keyboard.state";
 
   private static Session theSession;
   
   public static Session getTheSession() {
     if (theSession == null) { 
-      theSession = new Session();
+      theSession = loadDefault();
     }
     return theSession;
+  }
+  
+  public static Session loadDefault() { 
+    Session session;
+    try {
+      session = (Session) FileUtils.loadObjectFromHeliomugDirectory(SAVE_NAME);
+      session.keysDown = new HashMap<>();
+      session.finishSetup();
+      return session;
+    } catch (ClassNotFoundException | IOException e) {
+      e.printStackTrace();
+      return new Session();
+    }
   }
   
   
@@ -27,17 +47,20 @@ public class Session {
   private int volume;
   private KeyLayout keyLayout;
   private Note rootNote;
-  private Map<Integer, Boolean> keysDown;
+  private transient Map<Integer, Boolean> keysDown;
   
   private Session() {
     instrument = DEFAULT_INSTRUMENT;
     volume = DEFAULT_VOLUME;
     rootNote = DEFAULT_ROOT_NOTE;
-    MidiPlayer.setInstrument(instrument);
-    keyLayout = KeyLayout.getDefault();
+    keyLayout = DEFAULT_KEY_LAYOUT;
     keysDown = new HashMap<>();
+    finishSetup();
   }
-
+  
+  private void finishSetup() {
+    MidiPlayer.setInstrument(instrument);
+  }
   
   public String getStatusLine() {
     return String.format("Instrument: %s, Volume: %d, Layout: %s", instrument.getName(), volume, keyLayout.getName());
@@ -57,6 +80,7 @@ public class Session {
 
   
   public void setInstrument(StandardInstrument instrument) {
+    this.instrument = instrument;
     MidiPlayer.setInstrument(instrument);
   }
   
@@ -106,6 +130,14 @@ public class Session {
       if (note != null && note.getValue() > 0) {
         noteOff(note);
       }
+    }
+  }
+  
+  public void saveDefault() {
+    try {
+      FileUtils.saveObjectToHeliomugDirectory(this, SAVE_NAME);
+    } catch (IOException e) {
+      // guess we're not saving then
     }
   }
 }

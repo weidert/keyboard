@@ -1,4 +1,4 @@
-package com.heliomug.music.gui;
+package com.heliomug.music.keyboard;
 
 import static java.awt.event.KeyEvent.VK_0;
 import static java.awt.event.KeyEvent.VK_1;

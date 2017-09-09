@@ -1,4 +1,4 @@
-package com.heliomug.music.gui;
+package com.heliomug.music.keyboard;
 
 import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_G;
@@ -71,10 +71,6 @@ public enum KeyLayout {
     for (KeyLayout layout : KeyLayout.values()) {
       nameMap.put(layout.getName(), layout);
     }
-  }
-  
-  public static KeyLayout getDefault() {
-    return KeyLayout.PIANO_MIDDLE;
   }
   
   private String name;
