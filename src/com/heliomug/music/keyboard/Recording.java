@@ -18,9 +18,11 @@ public class Recording implements Serializable {
   private transient long startTime;
   private List<NoteEvent> noteEvents;
   
+  private transient Session session;
   private transient Thread playbackThread;
 
-  public Recording() {
+  public Recording(Session session) {
+    this.session = session;
     startTime = System.currentTimeMillis();
     noteEvents = new ArrayList<>();
   }
@@ -46,9 +48,9 @@ public class Recording implements Serializable {
       for (int i = 0; i < noteEvents.size() ; i++) {
         NoteEvent current = noteEvents.get(i);
         if (current.isOn) {
-          Session.getTheSession().robotOn(current.note);
+          session.robotOn(current.note);
         } else {
-          Session.getTheSession().robotOff(current.note);
+          session.robotOff(current.note);
         }
         
         if (i < noteEvents.size() - 1) {
@@ -57,7 +59,7 @@ public class Recording implements Serializable {
           try {
             Thread.sleep(dist);
           } catch (InterruptedException e) {
-            Session.getTheSession().robotAllOff();
+            session.robotAllOff();
             break;
           }
         }

@@ -67,7 +67,6 @@ import javax.swing.JPanel;
 
 import com.heliomug.music.Note;
 import com.heliomug.music.keyboard.KeyLayout;
-import com.heliomug.music.keyboard.Session;
 
 public class PanelKey extends JPanel {
   private static final long serialVersionUID = 7148600854029993474L;
@@ -120,27 +119,21 @@ public class PanelKey extends JPanel {
     put(VK_SHIFT, "\u21E7");
   }}; 
 
-  private static PanelKey thePanel;
-  
-  public static PanelKey getThePanel() {
-    if (thePanel == null) {
-      thePanel = new PanelKey();
-    }
-    return thePanel; 
-  }
-  
-
   private Map<Integer, ButtonKey> buttonMap;
   
-  private PanelKey() {
+  private Frame frame;
+  
+  public PanelKey(Frame frame) {
     super();
+    
+    this.frame = frame;
 
     buttonMap = new HashMap<>();
     for (int i = 0; i < KEYBOARD_CODES.length; i++) {
       int code = KEYBOARD_CODES[i];
       String letter = translateToCharacter(code);
       double widthFactor = KEY_WIDTHS.containsKey(code) ? KEY_WIDTHS.get(code) : 1.0; 
-      ButtonKey button = new ButtonKey(letter, widthFactor);
+      ButtonKey button = new ButtonKey(frame, letter, widthFactor);
       buttonMap.put(code, button);
     }
 
@@ -171,12 +164,12 @@ public class PanelKey extends JPanel {
   }
   
   public void refresh() {
-    KeyLayout layout = Session.getTheSession().getKeyLayout();
+    KeyLayout layout = frame.getSession().getKeyLayout();
     for (int i = 0; i < KEYBOARD_LAYOUT.length; i++) {
       for (int j = 0; j < KEYBOARD_LAYOUT[i].length; j++) {
         int keyCode = KEYBOARD_LAYOUT[i][j]; 
         int offset = layout.getNoteOffset(keyCode);
-        Note note = Session.getTheSession().getNote(offset);
+        Note note = frame.getSession().getNote(offset);
         buttonMap.get(keyCode).setNote(note);
       }
     }

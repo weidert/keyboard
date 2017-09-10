@@ -8,28 +8,21 @@ import com.heliomug.music.MidiPlayer;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
 import com.heliomug.music.keyboard.gui.Frame;
-import com.heliomug.music.keyboard.gui.PanelKey;
 
 public class Session {
-  private static Session theSession;
-  
-  public static Session getTheSession() {
-    if (theSession == null) { 
-      theSession = new Session();
-    }
-    return theSession;
-  }
-  
   private Settings settings;
   private Map<Integer, Boolean> keysDown;
   private boolean isRecording;
   private Recording recording;
   
-  private Session() {
+  Frame frame;
+  
+  public Session(Frame frame) {
+    this.frame = frame;
     settings = Settings.loadSettings();
     keysDown = new HashMap<>();
     isRecording = false;
-    recording = new Recording();
+    recording = new Recording(this);
     MidiPlayer.setInstrument(settings.getInstrument());
   }
   
@@ -87,7 +80,7 @@ public class Session {
       MidiPlayer.allNotesOff();
     }
     if (!keysDown.containsKey(keyCode) || !keysDown.get(keyCode) && e.getModifiers() == 0) {
-      PanelKey.getThePanel().whiteKey(keyCode);
+      frame.showKeyDown(keyCode);
       keysDown.put(keyCode, true);
       int offset = settings.getKeyLayout().getNoteOffset(keyCode);
       Note note = getNote(offset);
@@ -99,7 +92,7 @@ public class Session {
   
   public void handleKeyUp(KeyEvent e) {
     int keyCode = e.getKeyCode();
-    PanelKey.getThePanel().recolorKey(keyCode);
+    frame.showKeyUp(keyCode);
     if (keysDown.containsKey(keyCode) && keysDown.get(keyCode)) {
       keysDown.put(keyCode, false);
       int offset = settings.getKeyLayout().getNoteOffset(keyCode);
@@ -126,7 +119,7 @@ public class Session {
     int offset = getOffset(note);
     int keyCode = settings.getKeyLayout().getKeyCode(offset);
     if (keyCode >= 0) {
-      PanelKey.getThePanel().whiteKey(keyCode);
+      frame.showKeyUp(keyCode);
     }
   }
   
@@ -135,24 +128,24 @@ public class Session {
     int offset = getOffset(note);
     int keyCode = settings.getKeyLayout().getKeyCode(offset);
     if (keyCode >= 0) {
-      PanelKey.getThePanel().recolorKey(keyCode);
+      frame.showKeyUp(keyCode);
     }
   }
   
   public void robotAllOff() {
     MidiPlayer.allNotesOff();
-    PanelKey.getThePanel().recolorAll();
+    frame.showAllKeysUp();
   }
   
   public void recorderStartRecording() {
-    this.recording = new Recording();
+    this.recording = new Recording(this);
     this.isRecording = true;
-    Frame.update();
+    frame.update();
   }
   
   public void recorderStopRecording() {
     this.isRecording = false;
-    Frame.update();
+    frame.update();
   }
   
   public void recorderStartPlayback() {

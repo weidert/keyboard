@@ -13,7 +13,6 @@ import javax.swing.JMenuItem;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
 import com.heliomug.music.keyboard.KeyLayout;
-import com.heliomug.music.keyboard.Session;
 import com.heliomug.utils.Utils;
 import com.heliomug.utils.gui.MenuSelector;
 
@@ -39,9 +38,12 @@ public class MenuBar extends JMenuBar {
           StandardInstrument.MUSIC_BOX
     };
     
-  public MenuBar() {
+  private Frame frame;
+    
+  public MenuBar(Frame frame) {
     super();
 
+    this.frame = frame;
     
     add(getFileMenu());
     add(getRecorderMenu());
@@ -56,7 +58,7 @@ public class MenuBar extends JMenuBar {
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
-    item.addActionListener((ActionEvent e) -> Frame.getTheFrame().quit());
+    item.addActionListener((ActionEvent e) -> frame.quit());
     menu.add(item);
     
     return menu;
@@ -70,23 +72,23 @@ public class MenuBar extends JMenuBar {
     menu.setMnemonic(KeyEvent.VK_R);
     item = new JMenuItem("Start Recording", KeyEvent.VK_R);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderStartRecording();
+      frame.getSession().recorderStartRecording();
     });
     menu.add(item);
     item = new JMenuItem("Stop Recording", KeyEvent.VK_S);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderStopRecording();
+      frame.getSession().recorderStopRecording();
     });
     menu.add(item);
     menu.addSeparator();
     item = new JMenuItem("Start Playback", KeyEvent.VK_P);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderStartPlayback();
+      frame.getSession().recorderStartPlayback();
     });
     menu.add(item);
     item = new JMenuItem("Stop Playback", KeyEvent.VK_B);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().recorderStopPlayback();
+      frame.getSession().recorderStopPlayback();
     });
     menu.add(item);
     
@@ -110,8 +112,8 @@ public class MenuBar extends JMenuBar {
         Arrays.asList(BASIC_INSTRUMENTS), 
         extendedInstrumentList,
         (StandardInstrument instrument) -> {
-          Frame.getTheFrame().repaint();
-          Session.getTheSession().setInstrument(instrument);
+          frame.repaint();
+          frame.getSession().setInstrument(instrument);
         },
         (StandardInstrument instrument) -> instrument.getShortName(),
         (StandardInstrument instrument) -> null
@@ -122,7 +124,7 @@ public class MenuBar extends JMenuBar {
     MenuSelector<Integer> volumeSelector = new MenuSelector<>( 
         "Volume",
         Utils.toIntegerList(VOLUME_OPTIONS),
-        (Integer volume) -> Session.getTheSession().setVolume(volume)
+        (Integer volume) -> frame.getSession().setVolume(volume)
     );
     volumeSelector.setMnemonic(KeyEvent.VK_V);
     menu.add(volumeSelector);
@@ -132,8 +134,8 @@ public class MenuBar extends JMenuBar {
         Arrays.asList(KeyLayout.values()),
         null, 
         (KeyLayout layout) -> {
-          Session.getTheSession().setLayout(layout);
-          PanelKey.getThePanel().refresh();
+          frame.getSession().setLayout(layout);
+          frame.update();
         },
         (KeyLayout layout) -> layout.toString(), 
         (KeyLayout layout) -> layout.getMnemonic()
@@ -158,8 +160,8 @@ public class MenuBar extends JMenuBar {
         mainRoots,
         otherRoots, 
         (Note note) -> {
-          Session.getTheSession().setRootNote(note);
-          PanelKey.getThePanel().refresh();
+          frame.getSession().setRootNote(note);
+          frame.update();
         },
         (Note note) -> note.longName(),
         (Note note) -> null
@@ -169,8 +171,8 @@ public class MenuBar extends JMenuBar {
     menu.addSeparator();
     JMenuItem item = new JMenuItem("Reset to Defaults", KeyEvent.VK_D);
     item.addActionListener((ActionEvent e) -> {
-      Session.getTheSession().resetSettings();
-      PanelKey.getThePanel().refresh();
+      frame.getSession().resetSettings();
+      frame.update();
     });
     menu.add(item);
     
@@ -186,7 +188,7 @@ public class MenuBar extends JMenuBar {
     item = new JMenuItem("About");
     item.addActionListener((ActionEvent e) -> {
       String message = "By Craig Weidert, 2017";
-      javax.swing.JOptionPane.showMessageDialog(Frame.getTheFrame(), message);
+      javax.swing.JOptionPane.showMessageDialog(frame, message);
     });
     menu.add(item);
     

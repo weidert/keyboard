@@ -9,7 +9,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.heliomug.music.Note;
-import com.heliomug.music.keyboard.Session;
 
 public class ButtonKey extends JButton {
   private static final long serialVersionUID = -1417804610200497298L;
@@ -21,11 +20,11 @@ public class ButtonKey extends JButton {
   private String letter;
   private Note note;
   
-  public ButtonKey(String letter) {
-    this(letter, 1.0); 
+  public ButtonKey(Frame frame, String letter) {
+    this(frame, letter, 1.0); 
   }
  
-  public ButtonKey(String letter, double widthFactor) {
+  public ButtonKey(Frame frame, String letter, double widthFactor) {
     super(letter);
     this.letter = letter;
 
@@ -43,9 +42,9 @@ public class ButtonKey extends JButton {
           if (button.getModel().isPressed() != pressed) {
             pressed = button.getModel().isPressed();
             if (pressed) {
-              Session.getTheSession().pressNote(note);
+              frame.getSession().pressNote(note);
             } else {
-              Session.getTheSession().releaseNote(note);
+              frame.getSession().releaseNote(note);
             }
           }
         }

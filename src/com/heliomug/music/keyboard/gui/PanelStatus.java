@@ -5,14 +5,16 @@ import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import com.heliomug.music.keyboard.Session;
 import com.heliomug.utils.gui.UpdatingLabel;
 
 public class PanelStatus extends JPanel {
   private static final long serialVersionUID = -8306386547674245596L;
+  
+  private Frame frame;
 
-  public PanelStatus() {
+  public PanelStatus(Frame frame) {
     super(new BorderLayout());
+    this.frame = frame;
     setBorder(BorderFactory.createEtchedBorder());
     setupGUI();
   }
@@ -24,16 +26,16 @@ public class PanelStatus extends JPanel {
   
   public JPanel getRecordingPanel() {
     JPanel panel = new JPanel();
-    panel.add(new UpdatingLabel("isRecording", () -> Session.getTheSession().isRecording() ? "⏺" : "◼"));
-    panel.add(new UpdatingLabel("isPlaying", () -> Session.getTheSession().getRecording().isPlaying()? "▶" : "-"));
+    panel.add(new UpdatingLabel("isRecording", () -> frame.getSession().isRecording() ? "⏺" : "◼"));
+    panel.add(new UpdatingLabel("isPlaying", () -> frame.getSession().getRecording().isPlaying()? "▶" : "-"));
     
     return panel;
   }
   
   public JPanel getSettingsPanel() {
     JPanel panel = new JPanel();
-    panel.add(new UpdatingLabel("instrument", () -> Session.getTheSession().getSettings().getInstrument().getName()));
-    panel.add(new UpdatingLabel("volume", () -> String.format("(vol : %d)", Session.getTheSession().getSettings().getVolume())));
+    panel.add(new UpdatingLabel("instrument", () -> frame.getSession().getSettings().getInstrument().getName()));
+    panel.add(new UpdatingLabel("volume", () -> String.format("(vol : %d)", frame.getSession().getSettings().getVolume())));
     return panel;
   }
 }

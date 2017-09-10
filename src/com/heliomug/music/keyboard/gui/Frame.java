@@ -18,21 +18,13 @@ import com.heliomug.music.keyboard.Session;
 public class Frame extends JFrame {
   private static final long serialVersionUID = 6029069601675932278L;
   
-  private static Frame theFrame;
+  private Session session;
+  private PanelKey keyPanel;
   
-  public static Frame getTheFrame() {
-    if (theFrame == null) {
-      theFrame = new Frame();
-    }
-    return theFrame;
-  }
-
-  public static void update() {
-    getTheFrame().repaint();
-  }
-  
-  private Frame() {
+  public Frame() {
     super("Heliomug.com Keyboard");
+    
+    session = new Session(this);
     
     setupGUI();
   }
@@ -48,13 +40,13 @@ public class Frame extends JFrame {
     
     setupKeys();
     
-    setJMenuBar(new MenuBar());
+    setJMenuBar(new MenuBar(this));
     
     addIcon();
 
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(makeTabbedPane(), BorderLayout.CENTER);
-    panel.add(new PanelStatus(), BorderLayout.SOUTH);
+    panel.add(new PanelStatus(this), BorderLayout.SOUTH);
     add(panel);
 
     pack();
@@ -68,14 +60,18 @@ public class Frame extends JFrame {
         }
         int mods = e.getModifiers();
         if (mods == 0 || mods == 1) {
-          Session.getTheSession().handleKeyDown(e);
+          session.handleKeyDown(e);
         }
       }
       
       public void keyReleased(KeyEvent e) {
-        Session.getTheSession().handleKeyUp(e);
+        session.handleKeyUp(e);
       }
     });
+  }
+  
+  public Session getSession() {
+    return session;
   }
   
   private void moveToBottomRight() {
@@ -92,11 +88,13 @@ public class Frame extends JFrame {
     tabbedPane.setFocusable(false);
 
     tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+    
+    keyPanel = new PanelKey(this);
 
-    tabbedPane.addTab("Keyboard", null, PanelKey.getThePanel(), "The Keyboard");
+    tabbedPane.addTab("Keyboard", null, keyPanel, "The Keyboard");
     tabbedPane.setMnemonicAt(0, KeyEvent.VK_K);
 
-    tabbedPane.addTab("Recording", null, new PanelRecording(0, 100, 0, 100), "Recording");
+    tabbedPane.addTab("Recording", null, new PanelRecording(this, 0, 100, 0, 100), "Recording");
     tabbedPane.setMnemonicAt(1, KeyEvent.VK_D);
     
     return tabbedPane;
@@ -106,9 +104,26 @@ public class Frame extends JFrame {
     URL url = getClass().getResource("/heliomug256.png");
     setIconImage(new ImageIcon(url).getImage());    
   }
+
+  public void update() {
+    repaint();
+  }
+  
+  public void showKeyDown(int keyCode) {
+    keyPanel.whiteKey(keyCode);
+  }
+  
+  public void showKeyUp(int keyCode) {
+    keyPanel.recolorKey(keyCode);
+  }
+  
+  public void showAllKeysUp() {
+    keyPanel.recolorAll();
+  }
   
   public void quit() {
-    Session.getTheSession().saveDefault();
+    session.saveDefault();
     System.exit(0);
   }
+  
 }
