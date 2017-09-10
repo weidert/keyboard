@@ -13,7 +13,7 @@ import com.heliomug.music.Note;
 public class Recording implements Serializable {
   private static final long serialVersionUID = -2136605424538274565L;
   
-  private static final double SECOND_TO_SEMI_TONE_RENDER_RATIO = 4.0;
+  private static final double SECOND_TO_SEMI_TONE_RENDER_RATIO = 12.0;
 
   private transient long startTime;
   private List<NoteEvent> noteEvents;
@@ -35,6 +35,10 @@ public class Recording implements Serializable {
   
   public void recordNoteOff(Note note) {
     noteEvents.add(new NoteEvent(note, false));
+  }
+  
+  public boolean isPlaying() {
+    return playbackThread != null && playbackThread.isAlive();
   }
   
   public void startPlayback() {
@@ -65,7 +69,7 @@ public class Recording implements Serializable {
   }
   
   public void stopPlayback() {
-    if (playbackThread != null && playbackThread.isAlive()) playbackThread.interrupt();
+    if (isPlaying()) playbackThread.interrupt();
   }
   
   public void draw(Graphics2D g) {

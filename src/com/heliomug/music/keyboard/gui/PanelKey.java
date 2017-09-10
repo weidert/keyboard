@@ -69,7 +69,7 @@ import com.heliomug.music.Note;
 import com.heliomug.music.keyboard.KeyLayout;
 import com.heliomug.music.keyboard.Session;
 
-public class KeyPanel extends JPanel {
+public class PanelKey extends JPanel {
   private static final long serialVersionUID = 7148600854029993474L;
 
   private static final int[] KEYBOARD_CODES = {
@@ -120,19 +120,19 @@ public class KeyPanel extends JPanel {
     put(VK_SHIFT, "\u21E7");
   }}; 
 
-  private static KeyPanel thePanel;
+  private static PanelKey thePanel;
   
-  public static KeyPanel getThePanel() {
+  public static PanelKey getThePanel() {
     if (thePanel == null) {
-      thePanel = new KeyPanel();
+      thePanel = new PanelKey();
     }
     return thePanel; 
   }
   
 
-  private Map<Integer, KeyButton> buttonMap;
+  private Map<Integer, ButtonKey> buttonMap;
   
-  private KeyPanel() {
+  private PanelKey() {
     super();
 
     buttonMap = new HashMap<>();
@@ -140,7 +140,7 @@ public class KeyPanel extends JPanel {
       int code = KEYBOARD_CODES[i];
       String letter = translateToCharacter(code);
       double widthFactor = KEY_WIDTHS.containsKey(code) ? KEY_WIDTHS.get(code) : 1.0; 
-      KeyButton button = new KeyButton(letter, widthFactor);
+      ButtonKey button = new ButtonKey(letter, widthFactor);
       buttonMap.put(code, button);
     }
 
@@ -195,7 +195,7 @@ public class KeyPanel extends JPanel {
   }
   
   public void recolorAll() {
-    for (KeyButton button : buttonMap.values()) {
+    for (ButtonKey button : buttonMap.values()) {
       button.resetColor();
     }
   }

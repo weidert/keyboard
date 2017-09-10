@@ -7,7 +7,8 @@ import java.util.Map;
 import com.heliomug.music.MidiPlayer;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
-import com.heliomug.music.keyboard.gui.KeyPanel;
+import com.heliomug.music.keyboard.gui.Frame;
+import com.heliomug.music.keyboard.gui.PanelKey;
 
 public class Session {
   private static Session theSession;
@@ -29,12 +30,12 @@ public class Session {
     keysDown = new HashMap<>();
     isRecording = false;
     recording = new Recording();
-    MidiPlayer.setInstrument(settings.getActiveInstrument());
+    MidiPlayer.setInstrument(settings.getInstrument());
   }
   
   public void resetSettings() {
     settings = Settings.getFreshSettings();
-    MidiPlayer.setInstrument(settings.getActiveInstrument());
+    MidiPlayer.setInstrument(settings.getInstrument());
   }
   
   public KeyLayout getKeyLayout() {
@@ -49,6 +50,14 @@ public class Session {
     return noteOffset >= 0 ? settings.getRootNote().getHigher(noteOffset) : null;
   }
 
+  public Settings getSettings() {
+    return settings;
+  }
+  
+  public boolean isRecording() {
+    return isRecording;
+  }
+  
   public Recording getRecording() {
     return recording;  
   }
@@ -78,7 +87,7 @@ public class Session {
       MidiPlayer.allNotesOff();
     }
     if (!keysDown.containsKey(keyCode) || !keysDown.get(keyCode) && e.getModifiers() == 0) {
-      KeyPanel.getThePanel().whiteKey(keyCode);
+      PanelKey.getThePanel().whiteKey(keyCode);
       keysDown.put(keyCode, true);
       int offset = settings.getKeyLayout().getNoteOffset(keyCode);
       Note note = getNote(offset);
@@ -90,7 +99,7 @@ public class Session {
   
   public void handleKeyUp(KeyEvent e) {
     int keyCode = e.getKeyCode();
-    KeyPanel.getThePanel().recolorKey(keyCode);
+    PanelKey.getThePanel().recolorKey(keyCode);
     if (keysDown.containsKey(keyCode) && keysDown.get(keyCode)) {
       keysDown.put(keyCode, false);
       int offset = settings.getKeyLayout().getNoteOffset(keyCode);
@@ -117,7 +126,7 @@ public class Session {
     int offset = getOffset(note);
     int keyCode = settings.getKeyLayout().getKeyCode(offset);
     if (keyCode >= 0) {
-      KeyPanel.getThePanel().whiteKey(keyCode);
+      PanelKey.getThePanel().whiteKey(keyCode);
     }
   }
   
@@ -126,22 +135,24 @@ public class Session {
     int offset = getOffset(note);
     int keyCode = settings.getKeyLayout().getKeyCode(offset);
     if (keyCode >= 0) {
-      KeyPanel.getThePanel().recolorKey(keyCode);
+      PanelKey.getThePanel().recolorKey(keyCode);
     }
   }
   
   public void robotAllOff() {
     MidiPlayer.allNotesOff();
-    KeyPanel.getThePanel().recolorAll();
+    PanelKey.getThePanel().recolorAll();
   }
   
   public void recorderStartRecording() {
     this.recording = new Recording();
     this.isRecording = true;
+    Frame.update();
   }
   
   public void recorderStopRecording() {
     this.isRecording = false;
+    Frame.update();
   }
   
   public void recorderStartPlayback() {

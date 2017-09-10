@@ -4,6 +4,7 @@ import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_G;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_M;
+import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_P;
 import static java.awt.event.KeyEvent.VK_U;
 import static java.awt.event.KeyEvent.VK_W;
@@ -11,7 +12,7 @@ import static java.awt.event.KeyEvent.VK_W;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.heliomug.music.keyboard.gui.KeyPanel;
+import com.heliomug.music.keyboard.gui.PanelKey;
 
 public enum KeyLayout {
   CHROMATIC(new int[][] {
@@ -42,6 +43,13 @@ public enum KeyLayout {
       {-1, 0, 2, 4, 5, -1, -1, 7, 9, 11, 12, -1}},
       "Piano Homerow Two Row",
       VK_W),
+  PIANO_OCTAVES_MIDDLE(new int[][] {
+      {-1, -1, -1, 13, 15, -1, 18, 20, 22, -1, -1, -1, -1, -1},
+      {-1, -1, 12, 14, 16, 17, 19, 21, 23, 24, -1, -1, -1},
+      {-1, -1, 0, 2, 4, 5, 7, 9, 11, 12, -1, -1, -1},
+      {-1 -1, -1, 1, 3, -1, 6, 8, 10, -1, -1, -1}},
+      "Piano Octaves Middle",
+      VK_O),
   PIANO_HOMEROW_MIDDLE(new int[][] {
       {-1, -1, 13, 15, -1, 18, -1, 18, 20, 22, -1, -1, -1, -1},
       {-1, 12, 14, 16, 17, -1, -1, 19, 21, 23, 24, -1, -1, -1},
@@ -95,7 +103,7 @@ public enum KeyLayout {
     offsetMap = new HashMap<>();
     for (int i = 0; i < codes.length; i++) {
       for (int j = 0; j < codes[i].length; j++) {
-        int keyCode = KeyPanel.KEYBOARD_LAYOUT[i][j];
+        int keyCode = PanelKey.KEYBOARD_LAYOUT[i][j];
         int noteCode = codes[i][j];
         noteMap.put(keyCode, noteCode); 
         offsetMap.put(noteCode, keyCode); 

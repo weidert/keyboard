@@ -7,10 +7,10 @@ import java.awt.Graphics2D;
 import com.heliomug.music.keyboard.Session;
 import com.heliomug.utils.gui.ZoomablePanel;
 
-public class RecordingPanel extends ZoomablePanel {
+public class PanelRecording extends ZoomablePanel {
   private static final long serialVersionUID = 4285763780913531937L;
 
-  public RecordingPanel(double left, double right, double bottom, double top) {
+  public PanelRecording(double left, double right, double bottom, double top) {
     super(left, right, bottom, top);
     this.setBackground(Color.BLACK);
   }

@@ -18,7 +18,7 @@ import com.heliomug.utils.Utils;
 import com.heliomug.utils.gui.MenuSelector;
 
 @SuppressWarnings("serial")
-public class KeyboardMenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar {
     private static final int[] VOLUME_OPTIONS = new int[] {0, 1, 2, 5, 7, 10, 20, 40, 50, 70, 100};
     
     private static final StandardInstrument[] BASIC_INSTRUMENTS = new StandardInstrument[] { 
@@ -39,7 +39,7 @@ public class KeyboardMenuBar extends JMenuBar {
           StandardInstrument.MUSIC_BOX
     };
     
-  public KeyboardMenuBar() {
+  public MenuBar() {
     super();
 
     
@@ -56,7 +56,7 @@ public class KeyboardMenuBar extends JMenuBar {
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
-    item.addActionListener((ActionEvent e) -> KeyboardFrame.getTheFrame().quit());
+    item.addActionListener((ActionEvent e) -> Frame.getTheFrame().quit());
     menu.add(item);
     
     return menu;
@@ -110,7 +110,7 @@ public class KeyboardMenuBar extends JMenuBar {
         Arrays.asList(BASIC_INSTRUMENTS), 
         extendedInstrumentList,
         (StandardInstrument instrument) -> {
-          KeyboardFrame.getTheFrame().repaint();
+          Frame.getTheFrame().repaint();
           Session.getTheSession().setInstrument(instrument);
         },
         (StandardInstrument instrument) -> instrument.getShortName(),
@@ -133,7 +133,7 @@ public class KeyboardMenuBar extends JMenuBar {
         null, 
         (KeyLayout layout) -> {
           Session.getTheSession().setLayout(layout);
-          KeyPanel.getThePanel().refresh();
+          PanelKey.getThePanel().refresh();
         },
         (KeyLayout layout) -> layout.toString(), 
         (KeyLayout layout) -> layout.getMnemonic()
@@ -159,7 +159,7 @@ public class KeyboardMenuBar extends JMenuBar {
         otherRoots, 
         (Note note) -> {
           Session.getTheSession().setRootNote(note);
-          KeyPanel.getThePanel().refresh();
+          PanelKey.getThePanel().refresh();
         },
         (Note note) -> note.longName(),
         (Note note) -> null
@@ -170,7 +170,7 @@ public class KeyboardMenuBar extends JMenuBar {
     JMenuItem item = new JMenuItem("Reset to Defaults", KeyEvent.VK_D);
     item.addActionListener((ActionEvent e) -> {
       Session.getTheSession().resetSettings();
-      KeyPanel.getThePanel().refresh();
+      PanelKey.getThePanel().refresh();
     });
     menu.add(item);
     
@@ -186,7 +186,7 @@ public class KeyboardMenuBar extends JMenuBar {
     item = new JMenuItem("About");
     item.addActionListener((ActionEvent e) -> {
       String message = "By Craig Weidert, 2017";
-      javax.swing.JOptionPane.showMessageDialog(KeyboardFrame.getTheFrame(), message);
+      javax.swing.JOptionPane.showMessageDialog(Frame.getTheFrame(), message);
     });
     menu.add(item);
     

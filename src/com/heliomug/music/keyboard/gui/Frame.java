@@ -15,19 +15,23 @@ import javax.swing.JTabbedPane;
 
 import com.heliomug.music.keyboard.Session;
 
-public class KeyboardFrame extends JFrame {
+public class Frame extends JFrame {
   private static final long serialVersionUID = 6029069601675932278L;
   
-  private static KeyboardFrame theFrame;
+  private static Frame theFrame;
   
-  public static KeyboardFrame getTheFrame() {
+  public static Frame getTheFrame() {
     if (theFrame == null) {
-      theFrame = new KeyboardFrame();
+      theFrame = new Frame();
     }
     return theFrame;
   }
 
-  private KeyboardFrame() {
+  public static void update() {
+    getTheFrame().repaint();
+  }
+  
+  private Frame() {
     super("Heliomug.com Keyboard");
     
     setupGUI();
@@ -36,6 +40,27 @@ public class KeyboardFrame extends JFrame {
   public void setupGUI() {
     setFocusable(true);
     
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    moveToBottomRight();
+    
+    setResizable(false);
+    
+    setupKeys();
+    
+    setJMenuBar(new MenuBar());
+    
+    addIcon();
+
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(makeTabbedPane(), BorderLayout.CENTER);
+    panel.add(new PanelStatus(), BorderLayout.SOUTH);
+    add(panel);
+
+    pack();
+  }
+  
+  private void setupKeys() {
     addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_D && e.isControlDown()) {
@@ -51,27 +76,15 @@ public class KeyboardFrame extends JFrame {
         Session.getTheSession().handleKeyUp(e);
       }
     });
-    
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
+  }
+  
+  private void moveToBottomRight() {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
     Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
     int x = (int) rect.getMaxX() - getWidth();
     int y = (int) rect.getMaxY() - getHeight();
     setLocation(x, y);
-    
-    setResizable(false);
-    
-    setJMenuBar(new KeyboardMenuBar());
-    
-    addIcon();
-
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(makeTabbedPane(), BorderLayout.CENTER);
-
-    add(panel);
-    pack();
   }
 
   private JTabbedPane makeTabbedPane() {
@@ -80,10 +93,10 @@ public class KeyboardFrame extends JFrame {
 
     tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
-    tabbedPane.addTab("Keyboard", null, KeyPanel.getThePanel(), "The Keyboard");
+    tabbedPane.addTab("Keyboard", null, PanelKey.getThePanel(), "The Keyboard");
     tabbedPane.setMnemonicAt(0, KeyEvent.VK_K);
 
-    tabbedPane.addTab("Recording", null, new RecordingPanel(0, 100, 0, 100), "Recording");
+    tabbedPane.addTab("Recording", null, new PanelRecording(0, 100, 0, 100), "Recording");
     tabbedPane.setMnemonicAt(1, KeyEvent.VK_D);
     
     return tabbedPane;

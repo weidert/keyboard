@@ -11,7 +11,7 @@ import javax.swing.event.ChangeListener;
 import com.heliomug.music.Note;
 import com.heliomug.music.keyboard.Session;
 
-public class KeyButton extends JButton {
+public class ButtonKey extends JButton {
   private static final long serialVersionUID = -1417804610200497298L;
   
   private static final Font STANDARD_FONT = new Font("Sans Serif", Font.BOLD, 16);
@@ -21,11 +21,11 @@ public class KeyButton extends JButton {
   private String letter;
   private Note note;
   
-  public KeyButton(String letter) {
+  public ButtonKey(String letter) {
     this(letter, 1.0); 
   }
  
-  public KeyButton(String letter, double widthFactor) {
+  public ButtonKey(String letter, double widthFactor) {
     super(letter);
     this.letter = letter;
 
@@ -39,7 +39,7 @@ public class KeyButton extends JButton {
 
       public void stateChanged(ChangeEvent e) {
         if (note != null) {
-          KeyButton button = (KeyButton)e.getSource(); 
+          ButtonKey button = (ButtonKey)e.getSource(); 
           if (button.getModel().isPressed() != pressed) {
             pressed = button.getModel().isPressed();
             if (pressed) {

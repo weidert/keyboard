@@ -44,7 +44,7 @@ public class Settings implements Serializable {
     keyLayout = DEFAULT_KEY_LAYOUT;
   }
   
-  public StandardInstrument getActiveInstrument() {
+  public StandardInstrument getInstrument() {
     return instrument;
   }
   
