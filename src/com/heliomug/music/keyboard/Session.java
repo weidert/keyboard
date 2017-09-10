@@ -7,6 +7,7 @@ import java.util.Map;
 import com.heliomug.music.MidiPlayer;
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
+import com.heliomug.music.keyboard.gui.KeyPanel;
 
 public class Session {
   private static Session theSession;
@@ -21,13 +22,13 @@ public class Session {
   private Settings settings;
   private Map<Integer, Boolean> keysDown;
   private boolean isRecording;
-  private Recorder recorder;
+  private Recording recording;
   
   private Session() {
     settings = Settings.loadSettings();
     keysDown = new HashMap<>();
     isRecording = false;
-    recorder = new Recorder();
+    recording = new Recording();
     MidiPlayer.setInstrument(settings.getActiveInstrument());
   }
   
@@ -48,7 +49,11 @@ public class Session {
     return noteOffset >= 0 ? settings.getRootNote().getHigher(noteOffset) : null;
   }
 
+  public Recording getRecording() {
+    return recording;  
+  }
   
+
   public void setInstrument(StandardInstrument instrument) {
     settings.setInstrument(instrument);
     MidiPlayer.setInstrument(instrument);
@@ -97,12 +102,12 @@ public class Session {
   }
   
   public void pressNote(Note note) {
-    if (isRecording) recorder.recordNoteOn(note);
+    if (isRecording) recording.recordNoteOn(note);
     MidiPlayer.noteOn(note, settings.getVolume());
   }
   
   public void releaseNote(Note note) {
-    if (isRecording) recorder.recordNoteOff(note);
+    if (isRecording) recording.recordNoteOff(note);
     MidiPlayer.noteOff(note);
   }
 
@@ -131,7 +136,7 @@ public class Session {
   }
   
   public void recorderStartRecording() {
-    this.recorder = new Recorder();
+    this.recording = new Recording();
     this.isRecording = true;
   }
   
@@ -140,11 +145,11 @@ public class Session {
   }
   
   public void recorderStartPlayback() {
-    this.recorder.startPlayback();
+    this.recording.startPlayback();
   }
   
   public void recorderStopPlayback() {
-    this.recorder.stopPlayback();
+    this.recording.stopPlayback();
   }
 
   

@@ -11,6 +11,8 @@ import static java.awt.event.KeyEvent.VK_W;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.heliomug.music.keyboard.gui.KeyPanel;
+
 public enum KeyLayout {
   CHROMATIC(new int[][] {
       {-1, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46},
