@@ -6,6 +6,7 @@ import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_M;
 import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_P;
+import static java.awt.event.KeyEvent.VK_S;
 import static java.awt.event.KeyEvent.VK_U;
 import static java.awt.event.KeyEvent.VK_W;
 
@@ -22,6 +23,13 @@ public enum KeyLayout {
       {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1}},
       "Chromatic",
       VK_C),
+  SLOPING(new int[][] {
+      {-1, -1, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, -1, -1},
+      {-1, 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, -1, -1}, 
+      {-1, 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, -1}, 
+      {-1, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, -1}},
+      "Sloping",
+      VK_S),
   PIANO(new int[][] {
       {-1, -1, 18, 20, 22, -1, 25, 27, -1, 30, 32, 34, -1, -1},
       {-1, 17, 19, 21, 23, 24, 26, 28, 29, 31, 33, 35, 36, -1},
