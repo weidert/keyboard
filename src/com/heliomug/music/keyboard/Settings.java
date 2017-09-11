@@ -16,6 +16,9 @@ public class Settings implements Serializable {
   private static final Note DEFAULT_ROOT_NOTE = new Note(48);
   private static final KeyLayout DEFAULT_KEY_LAYOUT = KeyLayout.PIANO_HOMEROW_MIDDLE;
   private static final String SAVE_NAME = "keyboard.state";
+  
+  private static final boolean DEFAULT_SHOW_STATUS_PANEL = true;
+  private static final boolean DEFAULT_SHOW_TABBED_PANEL = true;
 
   public static Settings loadSettings() { 
     Settings settings;
@@ -37,29 +40,32 @@ public class Settings implements Serializable {
   private KeyLayout keyLayout;
   private Note rootNote;
   
+  boolean showStatusPanel;
+  boolean showTabbedPanel;
+  
   private Settings() {
     instrument = DEFAULT_INSTRUMENT;
     volume = DEFAULT_VOLUME;
     rootNote = DEFAULT_ROOT_NOTE;
     keyLayout = DEFAULT_KEY_LAYOUT;
+    showStatusPanel = DEFAULT_SHOW_STATUS_PANEL;
+    showTabbedPanel = DEFAULT_SHOW_TABBED_PANEL;
   }
   
-  public StandardInstrument getInstrument() {
-    return instrument;
+  public StandardInstrument getInstrument() { return instrument; }
+  public KeyLayout getKeyLayout() { return keyLayout; }
+  public Note getRootNote() { return rootNote; }
+  public int getVolume() { return volume; }
+  public boolean getShowTabbedPanel() { return showTabbedPanel; }
+  public boolean getShowStatusPanel() { return showStatusPanel; }
+  
+  public void setShowTabbedPane(boolean b) {
+    showTabbedPanel = b;   
   }
   
-  public KeyLayout getKeyLayout() {
-    return keyLayout;
+  public void setShowStatusPanel(boolean b) {
+    showStatusPanel = b;   
   }
-  
-  public Note getRootNote() {
-    return rootNote;
-  }
-  
-  public int getVolume() {
-    return volume;
-  }
-
   
   public void setInstrument(StandardInstrument instrument) {
     this.instrument = instrument;

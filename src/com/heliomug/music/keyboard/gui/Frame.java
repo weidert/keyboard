@@ -1,6 +1,7 @@
 package com.heliomug.music.keyboard.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
@@ -20,8 +21,10 @@ public class Frame extends JFrame {
   private static final long serialVersionUID = 6029069601675932278L;
   
   private Session session;
+  private JPanel mainPanel;
   private PanelKey keyPanel;
   private PanelRecording recordingPanel;
+  private PanelStatus statusPanel;
   private RecordingPlayer recordingPlayer; 
 
   public Frame() {
@@ -29,6 +32,11 @@ public class Frame extends JFrame {
     
     session = new Session(this);
     recordingPlayer = new RecordingPlayer(this);
+    mainPanel = new JPanel();
+    keyPanel = new PanelKey(this);
+    recordingPanel = new PanelRecording(this);
+    statusPanel = new PanelStatus(this);
+    statusPanel.setVisible(session.getSettings().getShowStatusPanel());
     
     setupGUI();
   }
@@ -48,26 +56,35 @@ public class Frame extends JFrame {
     
     addIcon();
 
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(makeTabbedPane(), BorderLayout.CENTER);
-    panel.add(new PanelStatus(this), BorderLayout.SOUTH);
-    add(panel);
+    mainPanel = new JPanel(new BorderLayout());
+    showTabsOrNot();
+    add(mainPanel);
 
     pack();
   }
   
-  private JTabbedPane makeTabbedPane() {
+  private void showTabsOrNot() {
+    if (session.getSettings().getShowTabbedPanel()) {
+      BorderLayout layout = (BorderLayout) mainPanel.getLayout();
+      Component comp = layout.getLayoutComponent(BorderLayout.CENTER); 
+      if (comp != null) mainPanel.remove(comp);
+      mainPanel.add(getTabbedPane(), BorderLayout.CENTER);
+    } else {
+      BorderLayout layout = (BorderLayout) mainPanel.getLayout();
+      Component comp = layout.getLayoutComponent(BorderLayout.CENTER); 
+      if (comp != null) mainPanel.remove(comp);
+      mainPanel.add(keyPanel, BorderLayout.CENTER);
+    }
+    mainPanel.add(statusPanel, BorderLayout.SOUTH);
+  }
+  
+  private JTabbedPane getTabbedPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
-
     tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-    
-    keyPanel = new PanelKey(this);
-    recordingPanel = new PanelRecording(this);
 
     tabbedPane.addTab("Keyboard", null, keyPanel, "The Keyboard");
     tabbedPane.setMnemonicAt(0, KeyEvent.VK_K);
-
     tabbedPane.addTab("Recording", null, recordingPanel, "Recording");
     tabbedPane.setMnemonicAt(1, KeyEvent.VK_D);
     
@@ -146,6 +163,18 @@ public class Frame extends JFrame {
     update();
   }
   
+  
+  public void setTabbedPane(boolean b) {
+    session.getSettings().setShowTabbedPane(b);
+    showTabsOrNot();
+    pack();
+  }
+  
+  public void setStatusVisible(boolean b) {
+    session.getSettings().setShowStatusPanel(b);
+    statusPanel.setVisible(b);
+    pack();
+  }
   
   public void showKeyDown(int keyCode) {
     keyPanel.whiteKey(keyCode);

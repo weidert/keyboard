@@ -142,8 +142,10 @@ public class Session {
   }
   
   public void stopRecording() {
-    recording.stop();
-    this.isRecording = false;
+    if (recording != null) {
+      recording.stop();
+      this.isRecording = false;
+    }
   }
   
   public void saveDefault() {

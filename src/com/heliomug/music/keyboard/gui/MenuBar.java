@@ -47,8 +47,8 @@ public class MenuBar extends JMenuBar {
     this.frame = frame;
     
     add(getFileMenu());
-    add(getRecorderMenu());
     add(getSettingsMenu());
+    add(getRecorderMenu());
     add(getAboutMenu());
   }
   
@@ -59,6 +59,8 @@ public class MenuBar extends JMenuBar {
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
     item.addActionListener((ActionEvent e) -> frame.quit());
     menu.add(item);
     
@@ -179,6 +181,8 @@ public class MenuBar extends JMenuBar {
     rootSelector.setMnemonic(KeyEvent.VK_R);
     menu.add(rootSelector);
     menu.addSeparator();
+    menu.add(getPanelMenu());
+    menu.addSeparator();
     JMenuItem item = new JMenuItem("Reset to Defaults", KeyEvent.VK_D);
     item.addActionListener((ActionEvent e) -> {
       frame.getSession().resetSettings();
@@ -189,6 +193,37 @@ public class MenuBar extends JMenuBar {
     return menu;
   }
   
+  public JMenu getPanelMenu() {
+    JMenu menu;
+    JMenuItem item;
+
+    menu = new JMenu("Panels");
+    menu.setMnemonic(KeyEvent.VK_P);
+    item = new JMenuItem("Show Status Panel", KeyEvent.VK_S);
+    item.addActionListener((ActionEvent e) -> {
+      frame.setStatusVisible(true);
+    });
+    menu.add(item);
+    item = new JMenuItem("Hide Status Panel", KeyEvent.VK_H);
+    item.addActionListener((ActionEvent e) -> {
+      frame.setStatusVisible(false);
+    });
+    menu.add(item);
+    menu.addSeparator();
+    item = new JMenuItem("Show Tabs", KeyEvent.VK_T);
+    item.addActionListener((ActionEvent e) -> {
+      frame.setTabbedPane(true);
+    });
+    menu.add(item);
+    item = new JMenuItem("Hide Tabs", KeyEvent.VK_B);
+    item.addActionListener((ActionEvent e) -> {
+      frame.setTabbedPane(false);
+    });
+    menu.add(item);
+    
+    return menu;
+  }
+
   public JMenu getAboutMenu() {
     JMenu menu;
     JMenuItem item;

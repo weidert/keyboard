@@ -27,10 +27,6 @@ public class MenuSelector<T> extends JMenu {
     this(title, options, Arrays.asList(hiddenOptions), toDo, labelFxn, (T option) -> null);
   }
 
-//  public MenuSelector(String title, List<T> options, List<T> hiddenOptions, Consumer<T> toDo, Function<T, String> labelFxn, Function<T, Integer> mnemonicFxn) {
-//    this(title, options, Arrays.asList(hiddenOptions), toDo, labelFxn, mnemonicFxn);
-//  }
-
   public MenuSelector(String title, List<T> options, List<List<T>> hiddenOptionsList, Consumer<T> toDo, Function<T, String> labelFxn, Function<T, Integer> mnemonicFxn) {
     super(title);
     JMenuItem item;
