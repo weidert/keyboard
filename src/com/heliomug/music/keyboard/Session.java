@@ -42,35 +42,19 @@ public class Session {
     return noteOffset >= 0 ? settings.getRootNote().getHigher(noteOffset) : null;
   }
 
-  public Settings getSettings() {
-    return settings;
-  }
-  
-  public boolean isRecording() {
-    return isRecording;
-  }
-  
-  public Recording getRecording() {
-    return recording;  
-  }
-  
+  public Settings getSettings() { return settings; }
+  public boolean isRecording() { return isRecording; }
+  public Recording getRecording() { return recording;  }
+
 
   public void setInstrument(StandardInstrument instrument) {
     settings.setInstrument(instrument);
     MidiPlayer.setInstrument(instrument);
   }
   
-  public void setLayout(KeyLayout keyLayout) {
-    settings.setLayout(keyLayout);
-  }
-  
-  public void setVolume(int volume) {
-    settings.setVolume(volume);
-  }
-  
-  public void setRootNote(Note rootNote) {
-    settings.setRootNote(rootNote);
-  }
+  public void setLayout(KeyLayout keyLayout) { settings.setLayout(keyLayout); }
+  public void setVolume(int volume) { settings.setVolume(volume); }
+  public void setRootNote(Note rootNote) { settings.setRootNote(rootNote); }
 
   
   public void handleKeyDown(KeyEvent e) {

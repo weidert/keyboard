@@ -7,15 +7,18 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.heliomug.music.keyboard.Recording;
 import com.heliomug.music.keyboard.Session;
+import com.heliomug.utils.FileUtils;
 
 public class Frame extends JFrame {
   private static final long serialVersionUID = 6029069601675932278L;
@@ -127,6 +130,7 @@ public class Frame extends JFrame {
   }
 
   public void update() {
+    keyPanel.refresh();
     repaint();
   }
 
@@ -143,24 +147,67 @@ public class Frame extends JFrame {
   }
   
   public void playPausePlayback() {
-    
+    if (recordingPlayer.isPlaying()) {
+      if (recordingPlayer.isPaused()) {
+        recordingPlayer.unPause();
+      } else {
+        recordingPlayer.pause();
+      }
+    } else {
+      startPlayback();
+    }
+    update();
   }
   
   public void pausePlayback() {
-    
+    recordingPlayer.pause();
+  }
+  
+  private void setRecording(Recording recording) {
+    session.startRecording(recording);
+    recordingPanel.setRecording(recording);
+    recordingPlayer.setRecording(recording);
+  }
+  
+  public void saveRecording() {
+    if (session.getRecording() != null) {
+      try {
+        FileUtils.saveObject(session.getRecording(), "Keyboard Recordings", "rec");
+      } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Not saved!");
+      }
+    } else {
+      JOptionPane.showMessageDialog(this, "No current recording!");
+    }
+  }
+  
+  public void loadRecording() {
+    try {
+      Object obj = FileUtils.loadObject("Keyboard Recordings", "rec");
+      if (obj instanceof Recording) {
+        setRecording((Recording) obj);
+      } else {
+        JOptionPane.showMessageDialog(this, "That's not a keyboard recording!");
+      }
+    } catch (ClassNotFoundException | IOException e) {
+      JOptionPane.showMessageDialog(this, "Not loaded!");
+    }
   }
   
   public void startRecording() {
     Recording recording = new Recording();
-    session.startRecording(recording);
-    recordingPanel.setRecording(recording);
-    recordingPlayer.setRecording(recording);
+    setRecording(recording);
     update();
   }
   
   public void stopRecording() {
     session.stopRecording();
     update();
+  }
+  
+  public void stopAll() {
+    stopRecording();
+    stopPlayback();
   }
   
   

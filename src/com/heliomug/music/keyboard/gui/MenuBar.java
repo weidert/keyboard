@@ -19,7 +19,7 @@ import com.heliomug.utils.gui.MenuSelector;
 
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
-    private static final int[] VOLUME_OPTIONS = new int[] {0, 1, 2, 5, 7, 10, 20, 40, 50, 70, 100};
+    private static final int[] VOLUME_OPTIONS = new int[] {0, 1, 2, 4, 8, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
     
     private static final StandardInstrument[] BASIC_INSTRUMENTS = new StandardInstrument[] { 
           StandardInstrument.PIANO_GRAND,  
@@ -58,6 +58,14 @@ public class MenuBar extends JMenuBar {
     
     menu = new JMenu("File");
     menu.setMnemonic(KeyEvent.VK_F);
+    item = new JMenuItem("Open Recording", KeyEvent.VK_O);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+    item.addActionListener((ActionEvent e) -> frame.loadRecording());
+    menu.add(item);
+    item = new JMenuItem("Save Recording", KeyEvent.VK_S);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+    item.addActionListener((ActionEvent e) -> frame.saveRecording());
+    menu.add(item);
     item = new JMenuItem("Exit", KeyEvent.VK_X);
     item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
     item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
@@ -80,7 +88,7 @@ public class MenuBar extends JMenuBar {
     });
     menu.add(item);
     item = new JMenuItem("Stop Recording", KeyEvent.VK_S);
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
     item.addActionListener((ActionEvent e) -> {
       frame.stopRecording();
     });
@@ -124,8 +132,8 @@ public class MenuBar extends JMenuBar {
         Arrays.asList(BASIC_INSTRUMENTS), 
         extendedInstrumentList,
         (StandardInstrument instrument) -> {
-          frame.repaint();
           frame.getSession().setInstrument(instrument);
+          frame.update();
         },
         (StandardInstrument instrument) -> instrument.getShortName(),
         (StandardInstrument instrument) -> null
@@ -136,7 +144,10 @@ public class MenuBar extends JMenuBar {
     MenuSelector<Integer> volumeSelector = new MenuSelector<>( 
         "Volume",
         Utils.toIntegerList(VOLUME_OPTIONS),
-        (Integer volume) -> frame.getSession().setVolume(volume)
+        (Integer volume) -> {
+          frame.getSession().setVolume(volume);
+          frame.update();
+        }
     );
     volumeSelector.setMnemonic(KeyEvent.VK_V);
     menu.add(volumeSelector);

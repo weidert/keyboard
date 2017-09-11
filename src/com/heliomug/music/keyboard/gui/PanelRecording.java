@@ -5,13 +5,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.heliomug.music.Note;
@@ -38,37 +36,12 @@ public class PanelRecording extends JPanel {
     this.displayPanel = new DisplayPanel();
     
     add(displayPanel, BorderLayout.CENTER);
-    add(getControlPanel(), BorderLayout.SOUTH);
   }
   
   public void setRecording(Recording recording) {
     this.recording = recording;
   }
 
-  public JPanel getControlPanel() {
-    JPanel panel = new JPanel();
-    panel.add(new MyButton(SharedConstants.REC_TEXT, () -> { frame.startRecording(); }));
-    panel.add(new MyButton(SharedConstants.STOP_TEXT, () -> { frame.stopRecording(); }));
-    panel.add(new MyButton(SharedConstants.PLAY_TEXT, () -> { frame.startPlayback(); }));
-    panel.add(new MyButton(SharedConstants.PLAY_PAUSE_TEXT, () -> { frame.playPausePlayback(); }));
-    panel.add(new MyButton(SharedConstants.PAUSE_TEXT, () -> { frame.pausePlayback(); }));
-    
-    return panel;
-  }
-  
-  private class MyButton extends JButton {
-    private static final long serialVersionUID = -7296252359503661927L;
-
-    public MyButton(String text, Runnable r) {
-      super(text);
-      setFocusable(false);
-      addActionListener((ActionEvent e) -> {
-        r.run();
-      });
-    }
-    
-  }
-  
   private class DisplayPanel extends ZoomablePanel {
     private static final long serialVersionUID = 691286340757028057L;
 

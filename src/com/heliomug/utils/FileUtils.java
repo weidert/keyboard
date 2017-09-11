@@ -69,31 +69,31 @@ public class FileUtils {
   }
 
     
-  public static Object readObject(String fileType, String fileExtension) throws FileNotFoundException, IOException, ClassNotFoundException {
-    return readObject("Select File to Open", fileType, fileExtension);
+  public static Object loadObject(String fileType, String fileExtension) throws FileNotFoundException, IOException, ClassNotFoundException {
+    return loadObject("Select File to Open", fileType, fileExtension);
   }
   
-  public static Object readObject(String title, String fileType, String fileExtension) throws FileNotFoundException, IOException, ClassNotFoundException {
+  public static Object loadObject(String title, String fileType, String fileExtension) throws FileNotFoundException, IOException, ClassNotFoundException {
     JFileChooser fc = new JFileChooser();
     fc.setFileFilter(new FileNameExtensionFilter(fileType, fileExtension)); 
     fc.setDialogTitle(title);
     int response = fc.showOpenDialog(null);
 
     if (response == JFileChooser.APPROVE_OPTION) {
-      return readObject(fc.getSelectedFile().getAbsolutePath());
+      return loadObject(fc.getSelectedFile().getAbsolutePath());
     } 
     
     return null;
   }
   
-  public static Object readObject(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
+  public static Object loadObject(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
       Object obj = ois.readObject();
       return obj;
     } 
   }
     
-  public static Object readObject(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
+  public static Object loadObject(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
       Object obj = ois.readObject();
       return obj;
@@ -101,7 +101,7 @@ public class FileUtils {
   }
 
   public static Object loadObjectFromHeliomugDirectory(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
-    return readObject(getHeliomugPath(fileName));
+    return loadObject(getHeliomugPath(fileName));
   }
       
   public static boolean saveObject(Object obj, String type, String extension) throws IOException {
@@ -136,6 +136,10 @@ public class FileUtils {
     return saveObject(obj, getHeliomugPath(fileName));
   }
       
+  public static boolean saveObject(Object obj) throws FileNotFoundException, IOException {
+    return saveObject(obj, new File(getHomePath()));
+  }
+  
   public static boolean saveObject(Object obj, File file) throws FileNotFoundException, IOException {
     return saveObject(obj, file.getAbsolutePath());
   }
