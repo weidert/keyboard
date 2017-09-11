@@ -1,108 +1,64 @@
 package com.heliomug.music.keyboard;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.heliomug.music.Note;
 
 public class Recording implements Serializable {
   private static final long serialVersionUID = -2136605424538274565L;
   
-  private static final double SECOND_TO_SEMI_TONE_RENDER_RATIO = 12.0;
-
   private transient long startTime;
-  private List<NoteEvent> noteEvents;
-  
-  private transient Session session;
-  private transient Thread playbackThread;
+  private transient boolean isActive;
 
-  public Recording(Session session) {
-    this.session = session;
+  private List<NoteEvent> noteEvents;
+  private Note minNote;
+  private Note maxNote;
+  private long maxTime;
+  
+  public Recording() {
     startTime = System.currentTimeMillis();
     noteEvents = new ArrayList<>();
+    minNote = maxNote = null;
+    maxTime = 0;
+    isActive = true;
   }
   
-  private long getElapsed() {
+  public boolean isActive() { return isActive; }
+
+  public long getElapsed() {
     return System.currentTimeMillis() - startTime; 
   }
   
+  public List<NoteEvent> getNoteEvents() { return noteEvents; }
+  public Note getMaxNote() { return maxNote; }
+  public Note getMinNote() { return minNote; }
+  public long getMaxTimeMillis() { return maxTime; }
+  public boolean hasNote() { return noteEvents.size() > 0; }
+
   public void recordNoteOn(Note note) {
-    noteEvents.add(new NoteEvent(note, true));
+    if (isActive) {
+      if (!hasNote()) {
+        startTime = System.currentTimeMillis();
+      }
+      long t = getElapsed();
+      noteEvents.add(new NoteEvent(note, t, true));
+      if (minNote == null || note.compareTo(minNote) < 0) minNote = note;
+      if (maxNote == null || note.compareTo(maxNote) > 0) maxNote = note;
+      maxTime = t;
+    }
   }
   
   public void recordNoteOff(Note note) {
-    noteEvents.add(new NoteEvent(note, false));
-  }
-  
-  public boolean isPlaying() {
-    return playbackThread != null && playbackThread.isAlive();
-  }
-  
-  public void startPlayback() {
-    Runnable r = () -> {
-      for (int i = 0; i < noteEvents.size() ; i++) {
-        NoteEvent current = noteEvents.get(i);
-        if (current.isOn) {
-          session.robotOn(current.note);
-        } else {
-          session.robotOff(current.note);
-        }
-        
-        if (i < noteEvents.size() - 1) {
-          NoteEvent next = noteEvents.get(i + 1);
-          long dist = next.time - current.time;
-          try {
-            Thread.sleep(dist);
-          } catch (InterruptedException e) {
-            session.robotAllOff();
-            break;
-          }
-        }
-      }
-    };
-    
-    playbackThread = new Thread(r);
-    playbackThread.start();
-  }
-  
-  public void stopPlayback() {
-    if (isPlaying()) playbackThread.interrupt();
-  }
-  
-  public void draw(Graphics2D g) {
-    Map<Integer, Double> startTimes = new HashMap<>();
-    for (NoteEvent event : noteEvents) {
-      int val = event.note.getValue();
-      double sec = event.time / 1000.0;
-      if (event.isOn) {
-        startTimes.put(val, sec); 
-      } else {
-        double startTime = startTimes.get(val);
-        startTimes.remove(val);
-        double dur = event.time / 1000.0 - startTime;
-        g.setColor(event.note.getColor());
-        g.fill(new Rectangle2D.Double(startTime * SECOND_TO_SEMI_TONE_RENDER_RATIO, val, dur * SECOND_TO_SEMI_TONE_RENDER_RATIO, 1));
-      }
-    }
-  }
-
-  private class NoteEvent implements Serializable {
-    private static final long serialVersionUID = 8365192790090537187L;
-
-    public long time;
-    public Note note;
-    public boolean isOn;
-    
-    public NoteEvent(Note note, boolean isOn) {
-      this.time = getElapsed();
-      this.note = note;
-      this.isOn = isOn;
+    if (isActive) {
+      long t = getElapsed();
+      noteEvents.add(new NoteEvent(note, t, false));
+      maxTime = t;
     }
   }
   
+  public void stop() {
+    isActive = false;
+  }
 }

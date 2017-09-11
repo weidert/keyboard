@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Note implements Serializable {
+public class Note implements Serializable, Comparable<Note> {
   private static final long serialVersionUID = 7263475941153866475L;
 
   private static final int INTERVALS_IN_CHROMATIC = 12;
@@ -80,6 +80,10 @@ public class Note implements Serializable {
 		
 		Note otherNote = (Note) other;
 		return otherNote.value == this.value;
+	}
+	
+	public int compareTo(Note other) {
+ 	  return Integer.compare(value, other.value);
 	}
 	
 	public String longName() {

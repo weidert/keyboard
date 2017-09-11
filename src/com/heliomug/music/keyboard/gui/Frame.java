@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.heliomug.music.keyboard.Recording;
 import com.heliomug.music.keyboard.Session;
 
 public class Frame extends JFrame {
@@ -20,11 +21,14 @@ public class Frame extends JFrame {
   
   private Session session;
   private PanelKey keyPanel;
-  
+  private PanelRecording recordingPanel;
+  private RecordingPlayer recordingPlayer; 
+
   public Frame() {
     super("Heliomug.com Keyboard");
     
     session = new Session(this);
+    recordingPlayer = new RecordingPlayer(this);
     
     setupGUI();
   }
@@ -52,6 +56,24 @@ public class Frame extends JFrame {
     pack();
   }
   
+  private JTabbedPane makeTabbedPane() {
+    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.setFocusable(false);
+
+    tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+    
+    keyPanel = new PanelKey(this);
+    recordingPanel = new PanelRecording(this);
+
+    tabbedPane.addTab("Keyboard", null, keyPanel, "The Keyboard");
+    tabbedPane.setMnemonicAt(0, KeyEvent.VK_K);
+
+    tabbedPane.addTab("Recording", null, recordingPanel, "Recording");
+    tabbedPane.setMnemonicAt(1, KeyEvent.VK_D);
+    
+    return tabbedPane;
+  }
+
   private void setupKeys() {
     addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
@@ -70,9 +92,8 @@ public class Frame extends JFrame {
     });
   }
   
-  public Session getSession() {
-    return session;
-  }
+  public Session getSession() { return session; }
+  public RecordingPlayer getPlayer() { return recordingPlayer; } 
   
   private void moveToBottomRight() {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -83,23 +104,6 @@ public class Frame extends JFrame {
     setLocation(x, y);
   }
 
-  private JTabbedPane makeTabbedPane() {
-    JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.setFocusable(false);
-
-    tabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-    
-    keyPanel = new PanelKey(this);
-
-    tabbedPane.addTab("Keyboard", null, keyPanel, "The Keyboard");
-    tabbedPane.setMnemonicAt(0, KeyEvent.VK_K);
-
-    tabbedPane.addTab("Recording", null, new PanelRecording(this, 0, 100, 0, 100), "Recording");
-    tabbedPane.setMnemonicAt(1, KeyEvent.VK_D);
-    
-    return tabbedPane;
-  }
-
   private void addIcon() {
     URL url = getClass().getResource("/heliomug256.png");
     setIconImage(new ImageIcon(url).getImage());    
@@ -108,6 +112,40 @@ public class Frame extends JFrame {
   public void update() {
     repaint();
   }
+
+  
+  public void startPlayback() {
+    session.stopRecording();
+    recordingPlayer.startPlayback();
+    update();
+  }
+  
+  public void stopPlayback() {
+    recordingPlayer.stopPlayback();
+    update();
+  }
+  
+  public void playPausePlayback() {
+    
+  }
+  
+  public void pausePlayback() {
+    
+  }
+  
+  public void startRecording() {
+    Recording recording = new Recording();
+    session.startRecording(recording);
+    recordingPanel.setRecording(recording);
+    recordingPlayer.setRecording(recording);
+    update();
+  }
+  
+  public void stopRecording() {
+    session.stopRecording();
+    update();
+  }
+  
   
   public void showKeyDown(int keyCode) {
     keyPanel.whiteKey(keyCode);
@@ -120,6 +158,7 @@ public class Frame extends JFrame {
   public void showAllKeysUp() {
     keyPanel.recolorAll();
   }
+
   
   public void quit() {
     session.saveDefault();

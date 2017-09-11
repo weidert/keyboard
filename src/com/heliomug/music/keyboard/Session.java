@@ -22,7 +22,6 @@ public class Session {
     settings = Settings.loadSettings();
     keysDown = new HashMap<>();
     isRecording = false;
-    recording = new Recording(this);
     MidiPlayer.setInstrument(settings.getInstrument());
   }
   
@@ -137,25 +136,15 @@ public class Session {
     frame.showAllKeysUp();
   }
   
-  public void recorderStartRecording() {
-    this.recording = new Recording(this);
-    this.isRecording = true;
-    frame.update();
+  public void startRecording(Recording recording) {
+    this.recording = recording;
+    isRecording = true;
   }
   
-  public void recorderStopRecording() {
+  public void stopRecording() {
+    recording.stop();
     this.isRecording = false;
-    frame.update();
   }
-  
-  public void recorderStartPlayback() {
-    this.recording.startPlayback();
-  }
-  
-  public void recorderStopPlayback() {
-    this.recording.stopPlayback();
-  }
-
   
   public void saveDefault() {
     settings.saveDefault();

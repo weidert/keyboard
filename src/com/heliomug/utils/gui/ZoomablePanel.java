@@ -21,17 +21,25 @@ public class ZoomablePanel extends JPanel  {
 
   private static final boolean DEFAULT_IS_ZOOMABLE = true;
   private static final boolean DEFAULT_IS_DRAGGABLE = true;
+  private static final boolean DEFAULT_IS_FIX_ASPECT_RATIO = false;
 
   private static final double WHEEL_ZOOM_FACTOR = 1.25;
   
   private double left, right, bottom, top;
   
-  private boolean isZoomable, isDraggable;
+  private boolean isZoomable, isDraggable, isFixAspectRatio;
+  
+  public ZoomablePanel() {
+    this(-10, 10, -10, 10);
+  }
   
   public ZoomablePanel(int pixelWidth, int pixelHeight) {
     this(pixelWidth, pixelHeight, -10, 10, -10, 10);
   }
 
+  public ZoomablePanel(Rectangle2D bounds) {
+    this(bounds.getMinX(), bounds.getMaxX(), bounds.getMinY(), bounds.getMaxY());
+  }
     
   public ZoomablePanel(int pixelWidth, int pixelHeight, Rectangle2D bounds) {
     this(pixelWidth, pixelHeight, bounds.getMinX(), bounds.getMaxX(), bounds.getMinY(), bounds.getMaxY());
@@ -51,11 +59,12 @@ public class ZoomablePanel extends JPanel  {
     
     this.isZoomable = DEFAULT_IS_ZOOMABLE;
     this.isDraggable = DEFAULT_IS_DRAGGABLE;
+    this.isFixAspectRatio = DEFAULT_IS_FIX_ASPECT_RATIO;
     
     this.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        fixAspectRatio();
+        if (isFixAspectRatio) fixAspectRatio();
       }
     });
     
@@ -108,7 +117,7 @@ public class ZoomablePanel extends JPanel  {
     this.right = right;
     this.bottom = bottom;
     this.top = top;
-    fixAspectRatio();
+    if (isFixAspectRatio) fixAspectRatio();
   }
 
   public void setCenterOfScreen(double x, double y) {

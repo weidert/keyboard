@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import com.heliomug.music.Note;
 import com.heliomug.music.StandardInstrument;
@@ -71,24 +72,33 @@ public class MenuBar extends JMenuBar {
     menu = new JMenu("Recorder");
     menu.setMnemonic(KeyEvent.VK_R);
     item = new JMenuItem("Start Recording", KeyEvent.VK_R);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
     item.addActionListener((ActionEvent e) -> {
-      frame.getSession().recorderStartRecording();
+      frame.startRecording();
     });
     menu.add(item);
     item = new JMenuItem("Stop Recording", KeyEvent.VK_S);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
     item.addActionListener((ActionEvent e) -> {
-      frame.getSession().recorderStopRecording();
+      frame.stopRecording();
     });
     menu.add(item);
     menu.addSeparator();
     item = new JMenuItem("Start Playback", KeyEvent.VK_P);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
     item.addActionListener((ActionEvent e) -> {
-      frame.getSession().recorderStartPlayback();
+      frame.startPlayback();
+    });
+    menu.add(item);
+    item = new JMenuItem("Play/Pause Playback");
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, ActionEvent.CTRL_MASK));
+    item.addActionListener((ActionEvent e) -> {
+      frame.playPausePlayback();
     });
     menu.add(item);
     item = new JMenuItem("Stop Playback", KeyEvent.VK_B);
     item.addActionListener((ActionEvent e) -> {
-      frame.getSession().recorderStopPlayback();
+      frame.stopPlayback();
     });
     menu.add(item);
     

@@ -24,10 +24,22 @@ public class PanelStatus extends JPanel {
     add(getSettingsPanel(), BorderLayout.EAST);
   }
   
+  public String getPlaybackText() {
+    if (frame.getPlayer().isPlaying()) {
+      return SharedConstants.PLAY_TEXT;
+    }
+    
+    if (frame.getSession().isRecording()) {
+      return SharedConstants.REC_TEXT;
+    }
+    
+    return SharedConstants.STOP_TEXT;
+  }
+  
   public JPanel getRecordingPanel() {
     JPanel panel = new JPanel();
-    panel.add(new UpdatingLabel("isRecording", () -> frame.getSession().isRecording() ? "⏺" : "◼"));
-    panel.add(new UpdatingLabel("isPlaying", () -> frame.getSession().getRecording().isPlaying()? "▶" : "-"));
+    
+    panel.add(new UpdatingLabel("isRecording", () -> getPlaybackText()));
     
     return panel;
   }
