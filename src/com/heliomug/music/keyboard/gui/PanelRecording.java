@@ -1,10 +1,12 @@
 package com.heliomug.music.keyboard.gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +22,9 @@ import com.heliomug.utils.gui.ZoomablePanel;
 public class PanelRecording extends JPanel {
   private static final long serialVersionUID = 4285763780913531937L;
 
+  private static final Color CURSOR_COLOR = Color.RED;
+  private static final double CURSOR_EXTEND = 1.0;
+   
   private Frame frame;
 
   private Recording recording;
@@ -76,7 +81,7 @@ public class PanelRecording extends JPanel {
         while (true) {
           PanelRecording.this.repaint();
           try {
-            Thread.sleep(100);
+            Thread.sleep(1);
           } catch (InterruptedException e) {
             break;
           }
@@ -89,12 +94,20 @@ public class PanelRecording extends JPanel {
       return l * SECOND_TO_SEMI_TONE_RENDER_RATIO / 1000.0;
     }
   
+    public double getYMin() {
+      return recording.getMinNote().getValue() - CURSOR_EXTEND;
+    }
+    
+    public double getYMax() {
+      return recording.getMaxNote().getValue() + 1 + CURSOR_EXTEND;  
+    }
+    
     public void resetScreenBounds() {
       Rectangle2D rect;
       if (recording == null || !recording.hasNote()) {
         rect = new Rectangle2D.Double(0, 10, 20, 30); 
       } else {
-        double height = recording.getMaxNote().getValue() + 1 - recording.getMinNote().getValue(); 
+        double height = getYMax() - getYMin(); 
         if (recording.isActive()) {
           rect = new Rectangle2D.Double(0, recording.getMinNote().getValue(), longToLoc(recording.getElapsed()), height);
         } else {
@@ -130,6 +143,12 @@ public class PanelRecording extends JPanel {
           double dur = lastTime / 1000.0 - startTime;
           g.setColor(new Note(val).getColor());
           g.fill(new Rectangle2D.Double(startTime * SECOND_TO_SEMI_TONE_RENDER_RATIO, val, dur * SECOND_TO_SEMI_TONE_RENDER_RATIO, 1));
+        }
+        if (frame.getPlayer().isPlaying()) {
+          double t = frame.getPlayer().getElapsed() / 1000.0;
+          g.setColor(CURSOR_COLOR);
+          g.setStroke(new BasicStroke(.1f));
+          g.draw(new Line2D.Double(t * SECOND_TO_SEMI_TONE_RENDER_RATIO, getYMin(), t * SECOND_TO_SEMI_TONE_RENDER_RATIO, getYMax()));
         }
       }
     }
