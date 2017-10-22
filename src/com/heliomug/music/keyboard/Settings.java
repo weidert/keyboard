@@ -19,6 +19,7 @@ public class Settings implements Serializable {
   
   private static final boolean DEFAULT_SHOW_STATUS_PANEL = true;
   private static final boolean DEFAULT_SHOW_TABBED_PANEL = true;
+  private static final boolean DEFAULT_IS_COLORED_KEYS = true;
 
   public static Settings loadSettings() { 
     Settings settings;
@@ -26,7 +27,6 @@ public class Settings implements Serializable {
       settings = (Settings) FileUtils.loadObjectFromHeliomugDirectory(SAVE_NAME);
       return settings;
     } catch (ClassNotFoundException | IOException e) {
-      e.printStackTrace();
       return new Settings();
     }
   }
@@ -38,6 +38,7 @@ public class Settings implements Serializable {
   private StandardInstrument instrument;
   private int volume;
   private KeyLayout keyLayout;
+  private boolean isColoredKeys;
   private Note rootNote;
   
   boolean showStatusPanel;
@@ -48,6 +49,7 @@ public class Settings implements Serializable {
     volume = DEFAULT_VOLUME;
     rootNote = DEFAULT_ROOT_NOTE;
     keyLayout = DEFAULT_KEY_LAYOUT;
+    isColoredKeys = DEFAULT_IS_COLORED_KEYS;
     showStatusPanel = DEFAULT_SHOW_STATUS_PANEL;
     showTabbedPanel = DEFAULT_SHOW_TABBED_PANEL;
   }
@@ -56,6 +58,7 @@ public class Settings implements Serializable {
   public KeyLayout getKeyLayout() { return keyLayout; }
   public Note getRootNote() { return rootNote; }
   public int getVolume() { return volume; }
+  public boolean getIsColoredKeys() { return isColoredKeys; }
   public boolean getShowTabbedPanel() { return showTabbedPanel; }
   public boolean getShowStatusPanel() { return showStatusPanel; }
   
@@ -67,6 +70,10 @@ public class Settings implements Serializable {
     showStatusPanel = b;   
   }
   
+  public void setColoredKeys(boolean b) {
+    isColoredKeys = b;   
+  }
+
   public void setInstrument(StandardInstrument instrument) {
     this.instrument = instrument;
     MidiPlayer.setInstrument(instrument);
@@ -88,7 +95,7 @@ public class Settings implements Serializable {
     try {
       FileUtils.saveObjectToHeliomugDirectory(this, SAVE_NAME);
     } catch (IOException e) {
-      e.printStackTrace();
+      // Guess we're not saving.
     }
   }
 }

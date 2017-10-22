@@ -131,6 +131,9 @@ public class Frame extends JFrame {
 
   public void update() {
     keyPanel.refresh();
+    showTabsOrNot();
+    statusPanel.setVisible(session.getSettings().getShowStatusPanel());
+    pack();
     repaint();
   }
 

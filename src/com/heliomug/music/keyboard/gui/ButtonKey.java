@@ -14,11 +14,16 @@ public class ButtonKey extends JButton {
   private static final long serialVersionUID = -1417804610200497298L;
   
   private static final Font STANDARD_FONT = new Font("Sans Serif", Font.BOLD, 16);
+
+  private static final Color MONOCHROME_COLOR = Color.DARK_GRAY; 
+
   private static final int HEIGHT = 36;
   private static final int WIDTH = 36;
   
   private String letter;
   private Note note;
+  
+  private Frame frame;
   
   public ButtonKey(Frame frame, String letter) {
     this(frame, letter, 1.0); 
@@ -26,6 +31,7 @@ public class ButtonKey extends JButton {
  
   public ButtonKey(Frame frame, String letter, double widthFactor) {
     super(letter);
+    this.frame = frame;
     this.letter = letter;
 
     setFont(STANDARD_FONT);
@@ -65,8 +71,10 @@ public class ButtonKey extends JButton {
     setForeground(Color.WHITE);
     if (note == null) {
       setBackground(Color.BLACK);
-    } else {
+    } else if (frame.getSession().getSettings().getIsColoredKeys()) {
       setBackground(note.getColor());
+    } else {
+      setBackground(MONOCHROME_COLOR);
     }
   }
   

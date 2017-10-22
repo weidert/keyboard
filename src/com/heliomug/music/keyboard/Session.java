@@ -62,6 +62,12 @@ public class Session {
     if (keyCode == KeyEvent.VK_ESCAPE) {
       MidiPlayer.allNotesOff();
     }
+    if (keyCode == KeyEvent.VK_PAGE_UP) {
+      moveRootByOctaves(1);
+    }
+    if (keyCode == KeyEvent.VK_PAGE_DOWN) {
+      moveRootByOctaves(-1);
+    }
     if (!keysDown.containsKey(keyCode) || !keysDown.get(keyCode) && e.getModifiers() == 0) {
       frame.showKeyDown(keyCode);
       keysDown.put(keyCode, true);
@@ -83,6 +89,14 @@ public class Session {
       if (note != null && note.getValue() > 0) {
         releaseNote(note);
       }
+    }
+  }
+  
+  public void moveRootByOctaves(int octaves) {
+    int semis = Note.INTERVALS_IN_OCTAVE * octaves;
+    int newValue = settings.getRootNote().getValue() + semis;
+    if (newValue >= Note.MIN_VALUE && newValue <= Note.MAX_VALUE) {
+      settings.setRootNote(new Note(newValue));
     }
   }
   

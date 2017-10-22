@@ -193,6 +193,7 @@ public class MenuBar extends JMenuBar {
     menu.add(rootSelector);
     menu.addSeparator();
     menu.add(getPanelMenu());
+    menu.add(getColorMenu());
     menu.addSeparator();
     JMenuItem item = new JMenuItem("Reset to Defaults", KeyEvent.VK_D);
     item.addActionListener((ActionEvent e) -> {
@@ -210,12 +211,12 @@ public class MenuBar extends JMenuBar {
 
     menu = new JMenu("Panels");
     menu.setMnemonic(KeyEvent.VK_P);
-    item = new JMenuItem("Show Status Panel", KeyEvent.VK_S);
+    item = new JMenuItem("Show Control Panel", KeyEvent.VK_S);
     item.addActionListener((ActionEvent e) -> {
       frame.setStatusVisible(true);
     });
     menu.add(item);
-    item = new JMenuItem("Hide Status Panel", KeyEvent.VK_H);
+    item = new JMenuItem("Hide Control Panel", KeyEvent.VK_H);
     item.addActionListener((ActionEvent e) -> {
       frame.setStatusVisible(false);
     });
@@ -229,6 +230,28 @@ public class MenuBar extends JMenuBar {
     item = new JMenuItem("Hide Tabs", KeyEvent.VK_B);
     item.addActionListener((ActionEvent e) -> {
       frame.setTabbedPane(false);
+    });
+    menu.add(item);
+    
+    return menu;
+  }
+
+  public JMenu getColorMenu() {
+    JMenu menu;
+    JMenuItem item;
+
+    menu = new JMenu("Color Keys");
+    menu.setMnemonic(KeyEvent.VK_K);
+    item = new JMenuItem("Yes", KeyEvent.VK_Y);
+    item.addActionListener((ActionEvent e) -> {
+      frame.getSession().getSettings().setColoredKeys(true);
+      frame.update();
+    });
+    menu.add(item);
+    item = new JMenuItem("No", KeyEvent.VK_N);
+    item.addActionListener((ActionEvent e) -> {
+      frame.getSession().getSettings().setColoredKeys(false);
+      frame.update();
     });
     menu.add(item);
     

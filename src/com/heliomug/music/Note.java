@@ -10,7 +10,9 @@ import java.util.Map;
 public class Note implements Serializable, Comparable<Note> {
   private static final long serialVersionUID = 7263475941153866475L;
 
-  private static final int INTERVALS_IN_CHROMATIC = 12;
+  public static final int INTERVALS_IN_OCTAVE = 12;
+  public static final int MIN_VALUE = 0;
+  public static final int MAX_VALUE = 127;
 	
 	private static final List<Integer> MAJOR_NOTES = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
 	private static final float[] COLORS = {
@@ -111,23 +113,23 @@ public class Note implements Serializable, Comparable<Note> {
   }
 	
 	public boolean isSameNoteLetter(Note other) {
-		return ((this.value - other.value) % INTERVALS_IN_CHROMATIC == 0); 
+		return ((this.value - other.value) % INTERVALS_IN_OCTAVE == 0); 
 	}
 	
 	public String getNoteName() {
-		return NOTE_NAMES[value % INTERVALS_IN_CHROMATIC];
+		return NOTE_NAMES[value % INTERVALS_IN_OCTAVE];
 	}
 	
 	public String getNoteLabel() {
-		return NOTE_LABELS[value % INTERVALS_IN_CHROMATIC];
+		return NOTE_LABELS[value % INTERVALS_IN_OCTAVE];
 	}
 	
 	public boolean isMajor() {
-	  return MAJOR_NOTES.contains(value % INTERVALS_IN_CHROMATIC);
+	  return MAJOR_NOTES.contains(value % INTERVALS_IN_OCTAVE);
 	}
 	
 	public Color getColor() {
-	  int baseValue = value % INTERVALS_IN_CHROMATIC;
+	  int baseValue = value % INTERVALS_IN_OCTAVE;
 	  float hue = COLORS[baseValue];
 	  float sat = isMajor() ? 1.0f : 0.5f;
 	  float brightness = 0.7f;
